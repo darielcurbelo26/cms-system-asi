@@ -8,6 +8,7 @@ Este proyecto es un CMS estático/local que ya consume contenido desde un WordPr
 - Tiene `.nojekyll` en la raíz — necesario porque GitHub Pages procesa con Jekyll por defecto, y Jekyll ignora archivos/carpetas que empiezan con `_` (este proyecto tiene cientos de imágenes `assets/images/_1.webp`, `_2.webp`, etc. que Jekyll habría excluido del build).
 - ⚠️ El sitio público en Pages expone `content.json` tal cual, incluyendo `security.gate_password` en texto plano (decisión aceptada por ahora — ver `.claude/skills/asi-wp-headless/SKILL.md`, reglas de seguridad).
 - Cada vez que se complete un avance real en este repo, se hace commit + push para mantenerlo respaldado en GitHub.
+- GitHub Pages aquí es el hosting de **desarrollo/demo**. Para producción real con dominio propio, ver **[GUIA-PRODUCCION.md](GUIA-PRODUCCION.md)** — propone un solo hosting compartido sirviendo la web en la raíz y WordPress en una subcarpeta (`/cms`), para evitar CORS entre dominios separados.
 
 ### Rutas importantes
 - Proyecto principal CMS: `/Users/darielcurbelo/Documents/CMS ASI WEBSITE CONFIG/ASI TEST (A CMS)/`
