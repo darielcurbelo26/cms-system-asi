@@ -43,7 +43,7 @@
     // --- GATEWAY / SECURITY CHECK ---
     async function checkSecurity() {
         try {
-            const response = await fetch('/content.json?t=' + Date.now());
+            const response = await fetch('content.json?t=' + Date.now());
             const data = await response.json();
             const security = data.security;
             if (!security) return;

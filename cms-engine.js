@@ -74,7 +74,7 @@
     } catch(e) {
       console.warn('[CMS] WP Headless API unavailable, falling back to local content.json');
       try {
-        const fallbackRes = await fetch('/content.json?t=' + Date.now());
+        const fallbackRes = await fetch('content.json?t=' + Date.now());
         if (fallbackRes.ok) {
           const fresh = await fallbackRes.json();
           if (!data) {
