@@ -118,17 +118,20 @@ function initCMS(data) {
     
     if (data.gallery_3d.artworks && data.gallery_3d.artworks.length > 0) {
       const dbArts = data.gallery_3d.artworks;
+      // Camera yaw is clamped to [-90deg, +90deg] (see drag handlers below), a 180deg
+      // arc that can only ever reach 3 walls: x=-R, z=-R, x=+R. A 4th wall at z=+R
+      // physically exists in the room but the camera can never pan to face it — so
+      // only 'left'/'center'/'right' are valid positions here, not a 4th "back" wall.
       const wallMap = {
-        'front': { pos: [-R + .05, 0, 0], ry: Math.PI / 2, cam: [-R + 2.5, 0, 0], look: [-R + .1, 0, 0], lp: [-R * .5, RH - .3, 0] },
-        'back': { pos: [R - .05, 0, 0], ry: -Math.PI / 2, cam: [R - 2.5, 0, 0], look: [R - .1, 0, 0], lp: [R * .5, RH - .3, 0] },
-        'left': { pos: [0, 0, -R + .05], ry: 0, cam: [0, 0, -R + 2.5], look: [0, 0, -R + .1], lp: [0, RH - .3, -R * .5] },
-        'right': { pos: [0, 0, R - .05], ry: Math.PI, cam: [0, 0, R - 2.5], look: [0, 0, R - .1], lp: [0, RH - .3, R * .5] }
+        'left': { pos: [-R + .05, 0, 0], ry: Math.PI / 2, cam: [-R + 2.5, 0, 0], look: [-R + .1, 0, 0], lp: [-R * .5, RH - .3, 0] },
+        'center': { pos: [0, 0, -R + .05], ry: 0, cam: [0, 0, -R + 2.5], look: [0, 0, -R + .1], lp: [0, RH - .3, -R * .5] },
+        'right': { pos: [R - .05, 0, 0], ry: -Math.PI / 2, cam: [R - 2.5, 0, 0], look: [R - .1, 0, 0], lp: [R * .5, RH - .3, 0] }
       };
-      
+
       // Clear the static ARTS and rebuild from CMS
       ARTS.length = 0;
       dbArts.forEach((dbArt) => {
-        const wMap = wallMap[dbArt.wall] || wallMap['front'];
+        const wMap = wallMap[dbArt.wall] || wallMap['center'];
         ARTS.push({
           id: dbArt.id,
           title: dbArt.title,

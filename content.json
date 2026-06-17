@@ -161,9 +161,9 @@
     "light_default_intensity": 70,
     "credits": "ISEEASI // 2026",
     "artworks": [
-      { "id": 0, "wall": "front", "title": "Fragmented Identity",  "alt": "Fragmented Identity",  "src": "assets/artworks/a_sweet_kid_fragmented_identity_1773578325456.png" },
-      { "id": 1, "wall": "left",  "title": "Negative Self Talk",   "alt": "Negative Self Talk",   "src": "assets/artworks/a_sweet_kid_negative_self_talk_1773578346007.png" },
-      { "id": 2, "wall": "right", "title": "Solitary Confinement", "alt": "Solitary Confinement", "src": "assets/artworks/a_sweet_kid_solitary_confinement_1773578370915.png" }
+      { "id": 0, "wall": "left",   "title": "Fragmented Identity",  "alt": "Fragmented Identity",  "src": "assets/artworks/a_sweet_kid_fragmented_identity_1773578325456.png" },
+      { "id": 1, "wall": "center", "title": "Negative Self Talk",   "alt": "Negative Self Talk",   "src": "assets/artworks/a_sweet_kid_negative_self_talk_1773578346007.png" },
+      { "id": 2, "wall": "right",  "title": "Solitary Confinement", "alt": "Solitary Confinement", "src": "assets/artworks/a_sweet_kid_solitary_confinement_1773578370915.png" }
     ]
   },
   "typography": {
