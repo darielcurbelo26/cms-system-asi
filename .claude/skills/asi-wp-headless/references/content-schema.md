@@ -98,7 +98,7 @@ gallery_3d.light_default_intensity    number
 gallery_3d.credits                    string
 gallery_3d.artworks[]                  array de:
   id    number
-  wall  string ("front" | "left" | "right")
+  wall  string ("left" | "center" | "right" — these are the only 3 positions the 3D camera can reach, see asi-wp-headless/SKILL.md)
   title string
   alt   string
   src   string (ruta de imagen)
