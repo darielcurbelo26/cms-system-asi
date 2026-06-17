@@ -105,7 +105,7 @@ function buildArtworks() {
     scene.add(tgt);
     spot.target = tgt;
     scene.add(spot);
-    spotLights.push(spot);
+    spotLights.push({ light: spot, id: a.id });
   });
 }
 
