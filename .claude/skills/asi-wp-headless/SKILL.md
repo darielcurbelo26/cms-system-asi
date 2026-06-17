@@ -215,6 +215,7 @@ Antes de tocar código del lado WordPress, consultar la skill correspondiente en
 - [ ] Decidir qué hacer con el código legado `admin-system.js` + `admin.css` + `data/config.json` (eliminar o documentar como obsoleto) — en el frontend.
 - [ ] Resolver la carpeta duplicada `projects/projects/` en el frontend.
 - [ ] El script de auto-migración en `functions.php` referencia una ruta del Desktop que ya no existe (ver "Reglas del lado WordPress") — no es urgente (ya corrió, tiene guard), pero limpiarlo evitaría confusión futura.
+- [x] Carrusel y galería 3D nunca cargaban — **corregido el 2026-06-17.** Dos causas distintas: (1) `a-sweet-kid.html` nunca cargaba `cms-engine.js`, así que `cms:ready` nunca se disparaba ahí y `carousel.js` esperaba para siempre (falla en cualquier entorno, no solo Pages). (2) `cms-engine.js`, `script.js` y `password.html` hacían `fetch('/content.json')` con ruta absoluta desde la raíz del dominio — rompe en GitHub Pages porque el sitio vive en `/cms-system-asi/`, no en la raíz. Fix: agregar el `<script>` faltante y cambiar las 3 rutas a relativas (`content.json` sin `/` inicial). Lección para cualquier fetch nuevo: usar siempre ruta relativa, nunca absoluta desde la raíz, porque este sitio puede vivir en un subpath.
 
 ## Principio de documentación a futuro
 
