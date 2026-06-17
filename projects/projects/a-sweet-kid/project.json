@@ -1,0 +1,32 @@
+{
+  "id": "a-sweet-kid",
+  "title": "A Sweet Kid",
+  "subtitle": "Immersive POV Experience",
+  "year": "2024",
+  "credits": "ISEEASI // 2026",
+  "description": "An exploration of childhood identity through digital fragmentation. Three perspectives on the formative self.",
+  "audio": "https://assets.mixkit.co/music/preview/mixkit-ambient-dream-12.mp3",
+  "artworks": [
+    {
+      "id": 0,
+      "wall": "front",
+      "title": "Fragmented Identity",
+      "description": "A study on the dissolution of self in early formation.",
+      "src": "artworks/a_sweet_kid_fragmented_identity_1773578325456.png"
+    },
+    {
+      "id": 1,
+      "wall": "left",
+      "title": "Negative Self Talk",
+      "description": "The internal voice that shapes and sometimes distorts.",
+      "src": "artworks/a_sweet_kid_negative_self_talk_1773578346007.png"
+    },
+    {
+      "id": 2,
+      "wall": "right",
+      "title": "Solitary Confinement",
+      "description": "Isolation as both prison and sanctuary.",
+      "src": "artworks/a_sweet_kid_solitary_confinement_1773578370915.png"
+    }
+  ]
+}

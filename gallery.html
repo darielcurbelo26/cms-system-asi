@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TATC - Gallery</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="design-system.js"></script>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+
+            color: var(--text-color);
+            min-height: 100dvh;
+            /* Hide scrollbar but allow scrolling */
+            scrollbar-width: none;
+            /* Firefox */
+            -ms-overflow-style: none;
+            /* IE/Edge */
+        }
+
+        body::-webkit-scrollbar {
+            display: none;
+            /* Chrome/Safari */
+        }
+
+        /* Fixed container that holds the gallery */
+        .gallery-viewport {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Center Title */
+        .gallery-center-text {
+            font-family: "Inter", sans-serif;
+            font-size: 2rem;
+            /* Exact size as requested */
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+            color: var(--text-color);
+            z-index: 10;
+            pointer-events: auto;
+            text-align: center;
+            filter: blur(0px);
+            transition: filter 0.1s ease;
+        }
+
+        /* Scroll proxy to allow scrolling experience */
+        .scroll-proxy {
+            height: 600dvh;
+            /* Determines how long the "scroll" feels */
+            width: 100%;
+            pointer-events: none;
+        }
+
+        /* Individual Images */
+        .gallery-item {
+            position: absolute;
+            width: clamp(80px, 10vw, 120px);
+            /* Max 120px as requested */
+            height: auto;
+            object-fit: cover;
+            opacity: 0;
+            /* Remove scale from base transform */
+            transform: rotate(0deg);
+            pointer-events: auto;
+            transition: filter 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            z-index: 5;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            z-index: 20;
+            filter: brightness(1.1);
+        }
+
+        /* Navbar & Toggles preservation */
+        .page-wrapper {
+            z-index: 100;
+        }
+    </style>
+</head>
+
+<body class="body_no-fixed">
+    <div class="transition-overlay" style="background: black;"></div>
+
+    <nav class="nav_component">
+        <div class="nav_container">
+            <a href="index.html" class="text-style-nav difference-text">
+                <span class="hover-split-text">
+                    <span class="text-inner">TATC</span>
+                    <span class="text-outer">TATC</span>
+                </span>
+            </a>
+            <div class="nav_button difference-text" id="nav_button-menu">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="gallery-viewport">
+        <h1 class="gallery-center-text">GALLERY</h1>
+        <div id="gallery-items-container"></div>
+    </div>
+
+    <!-- This div creates the scrolling space -->
+    <div class="scroll-proxy"></div>
+
+    <div class="page-wrapper">
+        <!-- Theme Toggle -->
+        <div class="fixed-controls_component">
+            <div class="icon-button is-square" title="Toggle Theme"></div>
+        </div>
+
+        <nav class="nav_menu">
+            <div class="nav_container nav_menu-container">
+                <div class="nav_list">
+                    <a href="blog.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">The gist</span>
+                            <span class="text-outer">The gist</span>
+                        </span>
+                    </a>
+                    <a href="projects.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">Projects</span>
+                            <span class="text-outer">Projects</span>
+                        </span>
+                    </a>
+                    <a href="about.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">Info</span>
+                            <span class="text-outer">Info</span>
+                        </span>
+                    </a>
+                </div>
+                <div class="nav_list social_list">
+                    <a href="https://x.com" target="_blank" class="social_link"><img src="assets/social_icons/xx.svg"
+                            alt="xx"></a>
+                    <a href="mailto:ejemplo@correo.com" class="social_link"><img src="assets/social_icons/mail.svg"
+                            alt="mail"></a>
+                    <a href="https://instagram.com" target="_blank" class="social_link"><img
+                            src="assets/social_icons/instagram.svg" alt="instagram"></a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- GSAP & ScrollTrigger -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+
+    <!-- Fullscreen Overlay (Static structure) -->
+    <div id="gallery-overlay">
+        <button class="overlay-btn overlay-prev">
+            <div class="css-arrow arrow-left"></div>
+        </button>
+        <div class="overlay-content">
+            <img id="overlay-img" src="" alt="Vista previa">
+        </div>
+        <button class="overlay-btn overlay-next">
+            <div class="css-arrow arrow-right"></div>
+        </button>
+        <button class="overlay-btn overlay-close">
+            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Force scroll to top on reload
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            window.scrollTo(0, 0);
+
+            const container = document.getElementById('gallery-items-container');
+            const overlay = document.getElementById('gallery-overlay');
+            const overlayImg = document.getElementById('overlay-img');
+            const btnPrev = document.querySelector('.overlay-prev');
+            const btnNext = document.querySelector('.overlay-next');
+
+            const itemCount = 28;
+            const images = [];
+            const imagesSrcList = [];
+
+            // 1. Grid Logic
+            const columns = 6;
+            const rows = 5;
+            let cells = [];
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < columns; c++) {
+                    if (r >= 2 && r <= 2 && c >= 2 && c <= 3) continue; // Keep center clear
+                    cells.push({ r, c });
+                }
+            }
+            cells.sort(() => Math.random() - 0.5);
+
+            // 2. Overlay Logic functions
+            let currentIdx = 0;
+            const updateOverlay = () => {
+                overlayImg.src = imagesSrcList[currentIdx];
+            };
+            const openOverlay = (idx) => {
+                currentIdx = idx;
+                updateOverlay();
+                overlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            };
+            const closeOverlay = () => {
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            };
+
+            btnNext.onclick = (e) => { e.stopPropagation(); currentIdx = (currentIdx + 1) % imagesSrcList.length; updateOverlay(); };
+            btnPrev.onclick = (e) => { e.stopPropagation(); currentIdx = (currentIdx - 1 + imagesSrcList.length) % imagesSrcList.length; updateOverlay(); };
+            
+            const btnClose = document.querySelector('.overlay-close');
+            if (btnClose) btnClose.onclick = (e) => { e.stopPropagation(); closeOverlay(); };
+
+            overlay.onclick = (e) => { if (e.target === overlay || e.target.classList.contains('overlay-content')) closeOverlay(); };
+
+            // 3. Create Items
+            for (let i = 0; i < Math.min(itemCount, cells.length); i++) {
+                const img = document.createElement('img');
+                const imgNum = Math.floor(Math.random() * 400) + 1;
+                const src = `assets/images/_${imgNum}.webp`;
+                img.src = src;
+                img.className = 'gallery-item';
+                imagesSrcList.push(src);
+
+                const cell = cells[i];
+                // Strict grid to avoid overlaps
+                const xBase = (cell.c / columns) * 100;
+                const yBase = (cell.r / rows) * 100;
+
+                // Minimal jitter to ensure no overlap
+                const xJitter = (Math.random() * 4) - 2;
+                const yJitter = (Math.random() * 4) - 2;
+
+                img.style.left = `${xBase + 5 + xJitter}%`;
+                img.style.top = `${yBase + 5 + yJitter}%`;
+
+                // No rotation as requested
+                img.style.transform = `scale(0.8) rotate(0deg)`;
+
+                img.addEventListener('click', () => openOverlay(i));
+
+                container.appendChild(img);
+                images.push(img);
+            }
+
+            // 4. Autoplay + Interaction Tracking (Immediate & Acceleratable)
+            let scrollY = window.pageYOffset || document.documentElement.scrollTop;
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            const autoSpeed = 2.5; // Even faster as requested
+            let targetScroll = scrollY;
+            let manualAccumulator = 0; // To track manual intent only
+
+            // Intercept wheel to add to our target and manual tracking
+            window.addEventListener('wheel', (e) => {
+                e.preventDefault(); // Stop browser from scrolling body natively
+                targetScroll += e.deltaY;
+                manualAccumulator += e.deltaY;
+                
+                if (targetScroll < 0) targetScroll = 0;
+                if (targetScroll > maxScroll) targetScroll = maxScroll;
+
+                // Drive Title Blur manually
+                const blurAmount = Math.min(Math.max(manualAccumulator / 40, 0), 20);
+                const opacityAmount = 1 - (blurAmount / 20);
+                
+                gsap.to(".gallery-center-text", {
+                    filter: `blur(${blurAmount}px)`,
+                    opacity: opacityAmount,
+                    duration: 0.3,
+                    overwrite: true
+                });
+            }, { passive: false });
+
+            // Smoothly interpolate current scroll towards targetScroll
+            gsap.ticker.add(() => {
+                // Autoplay drift
+                targetScroll += autoSpeed;
+
+                // Loop logic for infinite scroll
+                if (targetScroll >= maxScroll - 5) {
+                    targetScroll = 1;
+                    scrollY = 0;
+                    window.scrollTo(0, 0);
+                    // Force ScrollTrigger to recognize the jump
+                    ScrollTrigger.getAll().forEach(st => st.update());
+                    ScrollTrigger.refresh();
+                }
+
+                scrollY += (targetScroll - scrollY) * 0.1;
+                window.scrollTo(0, scrollY);
+            });
+
+            // 4. Scroll Animation logic
+            gsap.registerPlugin(ScrollTrigger);
+
+            images.forEach((img, i) => {
+                const totalItems = images.length;
+                // Distribute start points across 70% of the total scroll
+                const enterStart = (i / totalItems) * 0.70; 
+                const duration = 0.25; 
+
+                const tl = gsap.timeline({
+                    scrollTrigger: {
+                        trigger: ".scroll-proxy",
+                        // All animations will happen between 0% and 95% (0.7 + 0.25)
+                        start: `${enterStart * 100}% top`,
+                        end: `${(enterStart + duration) * 100}% top`,
+                        scrub: true, // Immediate response for infinite loop reset
+                    }
+                });
+
+                if (enterStart === 0) {
+                    gsap.set(img, { opacity: 1 });
+                    // First image should also have its own timeline to fade out
+                }
+
+                // Slower fade out, making sure they are all gone by the time we reach the end
+                tl.to(img, { opacity: 1, duration: 0.3 })
+                    .to(img, { opacity: 0, duration: 0.3 }, "+=0.4");
+            });
+
+            // Title ScrollTrigger removed - now handled by manualAccumulator listener above for manual-only effect
+            /*
+            gsap.to(".gallery-center-text", {
+                scrollTrigger: {
+                    trigger: ".scroll-proxy",
+                    start: "top top",
+                    end: "20% top", 
+                    scrub: true,
+                },
+                filter: "blur(20px)",
+                opacity: 0,
+                ease: "none"
+            });
+            */
+        });
+    </script>
+</body>
+
+</html>

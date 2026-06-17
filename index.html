@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-cms="home.meta_title">TATC - Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="cms-engine.js"></script>
+    <style>
+        /* El cubo arranca oculto; el JS lo muestra con visibility tras init */
+        #cube-container {
+            visibility: hidden;
+        }
+    </style>
+    <script src="design-system.js"></script>
+</head>
+
+<body class="body_fixed">
+    <!-- PRELOADER -->
+    <div id="loader-wrapper">
+        <div class="loader-text-container" id="loader-text">
+            IN A WORLD OF SAMENESS AND WIDESPREAD INFLUENCE, THROUGH ALL THE CLUTTER (TATC) EXISTS TO HELP PEOPLE UNCOVER WHAT MATTERS TO THEM. WE BELIEVE IN THE POWER OF INDEPENDENT THINKING-TO RESIST WHAT'S EVERYWHERE, EASY, OR EXPECTED.
+        </div>
+        
+        <!-- Cursor Follower for Desktop Loader -->
+        <div id="loader-cursor" class="carousel-cursor-follower" style="opacity: 0;">
+            <div class="cursor-mask">
+                    <span class="cursor-text" data-cms="home.loader_skip_label">SKIP</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="transition-overlay" style="background: black;"></div>
+
+    <nav class="nav_component">
+        <div class="nav_container">
+            <a href="index.html" class="text-style-nav difference-text">
+                <span class="hover-split-text">
+                    <span class="text-inner">TATC</span>
+                    <span class="text-outer">TATC</span>
+                </span>
+            </a>
+            <div class="nav_button difference-text" id="nav_button-menu">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="fixed-controls_component">
+            <div class="icon-button is-cube" title="Toggle Visibility">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="30" y="10" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" />
+                    <line x1="10" y1="30" x2="30" y2="10" stroke="currentColor" stroke-width="4" />
+                    <line x1="70" y1="30" x2="90" y2="10" stroke="currentColor" stroke-width="4" />
+                    <line x1="70" y1="90" x2="90" y2="70" stroke="currentColor" stroke-width="4" />
+                    <line x1="10" y1="90" x2="30" y2="70" stroke="currentColor" stroke-width="4" />
+                    <rect x="10" y="30" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" />
+                </svg>
+            </div>
+            <div class="icon-button is-square" title="Toggle Theme"></div>
+        </div>
+
+        <nav class="nav_menu">
+            <div class="nav_container nav_menu-container">
+                <div class="nav_list">
+                    <a href="blog.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">The gist</span>
+                            <span class="text-outer">The gist</span>
+                        </span>
+                    </a>
+                    <a href="projects.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">Projects</span>
+                            <span class="text-outer">Projects</span>
+                        </span>
+                    </a>
+                    <a href="about.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">Info</span>
+                            <span class="text-outer">Info</span>
+                        </span>
+                    </a>
+                </div>
+                <div class="nav_list social_list">
+                    <a href="https://x.com" target="_blank" class="social_link"><img src="assets/social_icons/xx.svg"
+                            alt="xx"></a>
+                    <a href="mailto:ejemplo@correo.com" class="social_link"><img src="assets/social_icons/mail.svg"
+                            alt="mail"></a>
+                    <a href="https://instagram.com" target="_blank" class="social_link"><img
+                            src="assets/social_icons/instagram.svg" alt="instagram"></a>
+                </div>
+            </div>
+        </nav>
+
+        <section class="section_hero">
+            <h1 class="heading-style-h1" style="transform: scale(1.22); position: relative; left: -1%;" data-cms="home.hero_headline">Through all the clutter</h1>
+        </section>
+    </div>
+
+    <div class="cms-cube-wrapper">
+        <div id="cube-container">
+            <div id="cube">
+                <div class="cube-face" id="f1"><img alt=""></div>
+                <div class="cube-face" id="f2"><img alt=""></div>
+                <div class="cube-face" id="f3"><img alt=""></div>
+                <div class="cube-face" id="f4"><img alt=""></div>
+                <div class="cube-face" id="f5"><img alt=""></div>
+                <div class="cube-face" id="f6"><img alt=""></div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- GSAP debe cargarse ANTES de script.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        // Loader must run AFTER cms:ready so we have the correct text before splitting.
+        // Falls back to the hardcoded text if CMS is unavailable.
+        function initLoader(loaderText) {
+            const loaderWrapper = document.getElementById('loader-wrapper');
+            if (!loaderWrapper) return;
+
+            // Check if user already saw the loader or is navigating from internal pages
+            const isInternal = document.referrer && document.referrer.includes(window.location.host);
+            if (sessionStorage.getItem('tatc-loaded') || isInternal) {
+                loaderWrapper.style.display = 'none';
+                return;
+            }
+
+            // Lock scroll while loader is active
+            document.body.style.overflow = 'hidden';
+
+            // Text Splitting Logic — runs AFTER content is available
+            const textEl = document.getElementById('loader-text');
+            textEl.innerHTML = '';
+            const words = loaderText.trim().split(/\s+/);
+            words.forEach((word) => {
+                const span = document.createElement('span');
+                span.className = 'loader-word';
+                span.innerText = word + ' ';
+                textEl.appendChild(span);
+            });
+
+            // Custom Follower Logic
+            const cursorFollower = document.getElementById('loader-cursor');
+            const cursorMask = cursorFollower.querySelector('.cursor-mask');
+            const cursorText = cursorFollower.querySelector('.cursor-text');
+
+            let cursorX = window.innerWidth / 2, cursorY = window.innerHeight / 2;
+            let targetX = cursorX, targetY = cursorY;
+            let isMobile = window.innerWidth <= 768;
+            let loaderState = 0;
+            let reqId;
+
+            const updateCursor = () => {
+                if (loaderState === 2) return;
+                cursorX += (targetX - cursorX) * 0.15;
+                cursorY += (targetY - cursorY) * 0.15;
+                cursorFollower.style.transform = `translate(${cursorX}px, ${cursorY}px) translate(-50%, -50%)`;
+                reqId = requestAnimationFrame(updateCursor);
+            };
+
+            if (!isMobile) {
+                window.addEventListener('mousemove', (e) => {
+                    targetX = e.clientX;
+                    targetY = e.clientY;
+                });
+                updateCursor();
+            }
+
+            setTimeout(() => {
+                if (loaderState < 2) {
+                    gsap.to(cursorFollower, { opacity: 1, duration: 0.3 });
+                    gsap.to(cursorMask, { width: cursorText.offsetWidth, duration: 0.4, ease: "power2.out" });
+                }
+            }, 3000);
+
+            const tl = gsap.timeline({
+                onComplete: () => {
+                    loaderState = 1;
+                    gsap.delayedCall(5, exitLoader);
+                }
+            });
+
+            tl.to('.loader-word', {
+                opacity: 1,
+                filter: "blur(0px)",
+                duration: 0.8,
+                stagger: 0.1,
+                ease: "power2.out"
+            });
+
+            function exitLoader() {
+                if (loaderState === 2) return;
+                loaderState = 2;
+                if (reqId) cancelAnimationFrame(reqId);
+                sessionStorage.setItem('tatc-loaded', 'true');
+                gsap.killTweensOf(cursorMask);
+                gsap.killTweensOf(cursorFollower);
+                gsap.to(loaderWrapper, {
+                    y: "-100%",
+                    duration: 1.2,
+                    ease: "power4.inOut",
+                    onComplete: () => {
+                        loaderWrapper.style.display = "none";
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
+
+            cursorFollower.addEventListener('click', (e) => {
+                e.stopPropagation();
+                gsap.killTweensOf(exitLoader);
+                tl.progress(1);
+                exitLoader();
+            });
+
+            loaderWrapper.addEventListener('click', () => {
+                if (isMobile) {
+                    if (loaderState === 0) { tl.progress(1); loaderState = 1; }
+                    else if (loaderState === 1) { gsap.killTweensOf(exitLoader); exitLoader(); }
+                } else {
+                    gsap.killTweensOf(exitLoader);
+                    tl.progress(1);
+                    exitLoader();
+                }
+            });
+        }
+
+        // Wait for CMS to be ready, then init loader with the correct text.
+        document.addEventListener('cms:ready', ({ detail: data }) => {
+            const text = (data.home && data.home.loader_text)
+                ? data.home.loader_text
+                : document.getElementById('loader-text').innerText;
+            initLoader(text);
+        });
+
+        // Safety fallback: if cms:ready never fires (e.g., file:// protocol)
+        // run the loader after a short delay using the hardcoded text.
+        setTimeout(() => {
+            if (!window.TATC_CONTENT) {
+                const fallbackText = document.getElementById('loader-text').innerText;
+                initLoader(fallbackText);
+            }
+        }, 500);
+    </script>
+</body>
+</html>

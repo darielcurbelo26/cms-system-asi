@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-cms="blog.meta_title">TATC - The Gist</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="cms-engine.js"></script>
+    <style>
+        /* --- Refined Blog Layout --- */
+        .blog_main {
+            padding: 10rem 0rem 0rem 0rem;
+            width: 100%;
+        }
+
+        .blog_title-section {
+            padding: 0 1.5rem 4rem 1.5rem;
+        }
+
+        .blog_entry {
+            display: grid;
+            grid-template-columns: 100px 1fr;
+            padding: 3rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-decoration: none;
+            color: var(--text-color);
+            background-color: transparent;
+            transition: background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .blog_entry:hover {
+            background-color: var(--text-color);
+        }
+
+        /* Specific text color flip to avoid transition artifacts on other properties */
+        .blog_entry:hover .blog_entry-title,
+        .blog_entry:hover .blog_entry-meta,
+        .blog_entry:hover .text-size-regular {
+            color: var(--bg-color);
+            opacity: 1;
+        }
+
+        .blog_entry-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            margin: 0;
+            transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: scale(1) !important;
+        }
+
+        .blog_entry-meta {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.6;
+            transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+        }
+
+        .blog_entry .text-size-regular {
+            transition: color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (max-width: 768px) {
+            .blog_entry {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+            .blog_main { padding-top: 8rem; }
+        }
+    </style>
+    <script src="design-system.js"></script>
+</head>
+
+<body class="body_no-fixed">
+    <div class="transition-overlay"></div>
+
+    <!-- Standard TATC Navbar -->
+    <nav class="nav_component">
+        <div class="nav_container">
+            <a href="index.html" class="text-style-nav difference-text">
+                <span class="hover-split-text">
+                    <span class="text-inner">TATC</span>
+                    <span class="text-outer">TATC</span>
+                </span>
+            </a>
+            <div class="nav_button difference-text" id="nav_button-menu">
+                <div></div><div></div><div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="fixed-controls_component">
+            <div class="icon-button is-square"></div>
+        </div>
+
+        <nav class="nav_menu">
+            <div class="nav_container nav_menu-container">
+                <div class="nav_list">
+                    <a href="blog.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text"><span class="text-inner">The gist</span><span class="text-outer">The gist</span></span>
+                    </a>
+                    <a href="projects.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text"><span class="text-inner">Projects</span><span class="text-outer">Projects</span></span>
+                    </a>
+                    <a href="about.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text"><span class="text-inner">Info</span><span class="text-outer">Info</span></span>
+                    </a>
+                </div>
+                <div class="nav_list social_list">
+                    <a href="https://x.com" target="_blank" class="social_link"><img src="assets/social_icons/xx.svg" alt="xx"></a>
+                    <a href="mailto:ejemplo@correo.com" class="social_link"><img src="assets/social_icons/mail.svg" alt="mail"></a>
+                    <a href="https://instagram.com" target="_blank" class="social_link"><img src="assets/social_icons/instagram.svg" alt="instagram"></a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="blog_main">
+            <div class="blog_title-section">
+                <span class="text-style-label" data-cms="blog.page_label">Selected Journal</span>
+                <h1 style="font-size: 4rem; text-transform: uppercase; font-weight: 900; letter-spacing: -0.06em; margin: 0; transform: scale(1) !important;" data-cms="blog.page_title">The Gist</h1>
+            </div>
+
+            <!-- Rendered by CMS -->
+            <div class="blog_list" id="blog-list"></div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('cms:ready', ({ detail: data }) => {
+            const list = document.getElementById('blog-list');
+            if (!list || !data.blog.posts) return;
+            list.innerHTML = data.blog.posts.map(post => `
+                <a href="${post.url}" class="blog_entry">
+                    <div class="blog_entry-meta">${post.date}</div>
+                    <div class="blog_entry-content">
+                        <h2 class="blog_entry-title">${post.title}</h2>
+                        <p class="text-size-regular">${post.summary}</p>
+                    </div>
+                </a>
+            `).join('');
+
+            // Attach page transition to dynamically created links.
+            // These are generated after DOMContentLoaded so script.js
+            // never saw them — we must wire them manually here.
+            list.querySelectorAll('a.blog_entry').forEach(link => {
+                link.addEventListener('click', e => {
+                    if (window.canviaPagina) {
+                        e.preventDefault();
+                        window.canviaPagina(e);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TATC - The Gist</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="cms-engine.js"></script>
+    <style>
+        /* --- Refined Editorial Post Layout --- */
+        .post_wrapper {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10rem 1.5rem 6rem 1.5rem;
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 4rem;
+            align-items: start; /* Required for sticky to work in grid */
+        }
+
+        .post_sidebar {
+            position: sticky;
+            top: 7rem;           /* offset below fixed navbar */
+            align-self: start;   /* Essential: prevents grid from stretching this cell */
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .post_main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+        }
+
+        .post_title-block {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 3rem;
+        }
+
+        .post_editorial-title {
+            font-size: 3.5rem;
+            line-height: 0.9;
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: -0.07em;
+            margin: 0;
+            transform: scale(1) !important;
+        }
+
+        .post_article-body {
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+        }
+
+        .post_image-editorial {
+            width: 70%;
+            aspect-ratio: 4/5;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: filter 0.6s ease;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+
+        .post_image-editorial:hover {
+            filter: grayscale(0%);
+        }
+
+        .post_caption {
+            font-size: 0.7rem;
+            opacity: 0.5;
+            margin-top: -1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .post_pull-quote {
+            font-size: 1.5rem;
+            line-height: 1.2;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: -0.03em;
+            border-left: 1px solid var(--text-color);
+            padding-left: 2rem;
+            margin: 2rem 0;
+            max-width: 500px;
+        }
+
+        .post_footer-nav {
+            margin-top: 6rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        @media (max-width: 900px) {
+            .post_wrapper {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding-top: 8rem;
+            }
+            .post_sidebar {
+                position: static;
+                flex-direction: row;
+                justify-content: space-between;
+                border-bottom: 1px solid var(--border-color);
+                padding-bottom: 1rem;
+            }
+            .post_image-editorial {
+                width: 100%;
+            }
+            .post_editorial-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+    <script src="design-system.js"></script>
+</head>
+
+<body class="body_no-fixed">
+    <div class="transition-overlay"></div>
+
+    <!-- Standard TATC Navbar -->
+    <nav class="nav_component">
+        <div class="nav_container">
+            <a href="blog.html" class="text-style-nav difference-text">
+                <span class="hover-split-text">
+                    <span class="text-inner">TATC</span>
+                    <span class="text-outer">TATC</span>
+                </span>
+            </a>
+            <div class="nav_button difference-text" id="nav_button-menu">
+                <div></div><div></div><div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="fixed-controls_component">
+            <div class="icon-button is-square"></div>
+        </div>
+
+        <nav class="nav_menu">
+            <div class="nav_container nav_menu-container">
+                <div class="nav_list">
+                    <a href="blog.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text"><span class="text-inner">The gist</span><span class="text-outer">The gist</span></span>
+                    </a>
+                    <a href="projects.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text"><span class="text-inner">Projects</span><span class="text-outer">Projects</span></span>
+                    </a>
+                    <a href="about.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text"><span class="text-inner">Info</span><span class="text-outer">Info</span></span>
+                    </a>
+                </div>
+                <div class="nav_list social_list">
+                    <a href="https://x.com" target="_blank" class="social_link"><img src="assets/social_icons/xx.svg" alt="xx"></a>
+                    <a href="mailto:ejemplo@correo.com" class="social_link"><img src="assets/social_icons/mail.svg" alt="mail"></a>
+                    <a href="https://instagram.com" target="_blank" class="social_link"><img src="assets/social_icons/instagram.svg" alt="instagram"></a>
+                </div>
+            </div>
+        </nav>
+
+        <main class="post_wrapper">
+            <aside class="post_sidebar">
+                <a href="blog.html" class="text-style-label" style="text-decoration: none; opacity: 0.5;">← Archive</a>
+                <div class="sidebar_meta">
+                    <span class="text-style-label" style="display: block; margin-bottom: 0.5rem; opacity: 0.4;">Date</span>
+                    <span class="text-style-label" id="post-date">—</span>
+                </div>
+                <div class="sidebar_meta">
+                    <span class="text-style-label" style="display: block; margin-bottom: 0.5rem; opacity: 0.4;">Subject</span>
+                    <span class="text-style-label" id="post-subject">—</span>
+                </div>
+            </aside>
+
+            <div class="post_main-content">
+                <header class="post_title-block">
+                    <h1 class="post_editorial-title" id="post-title">Loading...</h1>
+                </header>
+
+                <article class="post_article-body" id="post-body"></article>
+
+                <footer class="post_footer-nav">
+                    <span class="text-style-label" id="post-footer-label" style="opacity: 0.4;">TATC — THE GIST</span>
+                    <span class="text-style-label" id="post-footer-credit">ISEEASI — 2026</span>
+                </footer>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('cms:ready', ({ detail: data }) => {
+            // Get slug from URL: post.html?slug=post-1
+            const slug = new URLSearchParams(window.location.search).get('slug') || 'post-1';
+            const post = data.post.posts[slug];
+            if (!post) return;
+
+            // Update page title
+            document.title = post.meta_title;
+
+            // Sidebar
+            document.getElementById('post-date').textContent = post.date;
+            document.getElementById('post-subject').textContent = post.subject;
+
+            // Main title
+            document.getElementById('post-title').textContent = post.title;
+
+            // Footer
+            document.getElementById('post-footer-label').textContent = post.footer_label;
+            document.getElementById('post-footer-credit').textContent = post.footer_credit;
+
+            // Body blocks
+            const body = document.getElementById('post-body');
+            body.innerHTML = post.body.map(block => {
+                if (block.type === 'paragraph') {
+                    return `<p class="text-size-regular">${block.text}</p>`;
+                }
+                if (block.type === 'image') {
+                    return `
+                        <div style="display: flex; flex-direction: column; gap: 1rem;">
+                            <img src="${block.src}" class="post_image-editorial" alt="${block.alt}">
+                            <span class="text-style-label post_caption">${block.caption}</span>
+                        </div>`;
+                }
+                if (block.type === 'pullquote') {
+                    return `<div class="post_pull-quote">${block.text}</div>`;
+                }
+                return '';
+            }).join('');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-03-02T12:00:00Z",
+  "site": {
+    "title": "TATC Portfolio",
+    "description": "Through all the clutter"
+  },
+  "pages": {
+    "index": {
+      "hero": {
+        "title": "Through all the clutter",
+        "subtitle": ""
+      }
+    },
+    "about": {
+      "title": "A Sweet Kid",
+      "intro_title": "Mexico City Art Week 2025",
+      "paragraphs": [
+        "Párrafo 1 del About.",
+        "Párrafo 2 del About.",
+        "Párrafo 3 del About."
+      ]
+    },
+    "a_sweet_kid": {
+      "title": "A Sweet Kid",
+      "location": "Mexico City — Salon Silicon",
+      "description": "Descripción del proyecto A Sweet Kid."
+    }
+  },
+  "projects": [
+    {
+      "id": 1,
+      "src": "assets/images/_1.webp",
+      "title": "A Sweet Kid",
+      "desc": "Multimedia installation",
+      "date": "2025",
+      "loc": "Mexico City — Salon Silicon",
+      "link": "a-sweet-kid.html"
+    },
+    {
+      "id": 2,
+      "src": "assets/images/_51.webp",
+      "title": "Project Two",
+      "desc": "Short description",
+      "date": "2024",
+      "loc": "Location",
+      "link": "a-sweet-kid.html"
+    }
+  ],
+  "socials": {
+    "x": "https://x.com",
+    "instagram": "https://instagram.com",
+    "email": "ejemplo@correo.com"
+  },
+  "variables": {
+    "typography": {
+      "navbar-font-size": "1rem",
+      "navbar-weight": "500",
+      "hero-font-size": "14cqw",
+      "hero-weight": "900"
+    },
+    "spacing": {
+      "inner-navbar": "0.75rem",
+      "card-gap": "8px",
+      "card-height": "160px"
+    },
+    "colors": {
+      "light_bg": "#FFFFFF",
+      "light_text": "#000000",
+      "dark_bg": "#000000",
+      "dark_text": "#FFFFFF"
+    }
+  }
+}

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Anti-flash: black background before any CSS loads -->
+    <meta name="theme-color" content="#111111">
+    <style>html,body{background:#111;margin:0;padding:0;}</style>
+    <title>Project — TATC</title>
+    <link rel="stylesheet" href="../../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            background: #1a1a1a;
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── LOADER ── */
+        #loader {
+            position: fixed; inset: 0; background: #111;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            z-index: 9000; transition: opacity 0.8s ease;
+        }
+        #loader .l-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px; letter-spacing: 12px; text-transform: uppercase;
+            color: rgba(255,255,255,0.45); margin-bottom: 1.5rem;
+        }
+        #loader .l-track { width: 140px; height: 1px; background: rgba(255,255,255,0.1); position: relative; }
+        #loader .l-fill { position: absolute; left: 0; top: 0; height: 100%; width: 0; background: #fff; transition: width 0.1s linear; }
+
+        /* ── GALLERY STAGE ── */
+        #stage {
+            width: 100vw; height: 100vh;
+            position: relative; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            background: #1a1a1a;
+        }
+
+        /* Room shadow vignette */
+        #stage::before {
+            content: ''; position: absolute; inset: 0; z-index: 1;
+            background: radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.7) 100%);
+            pointer-events: none;
+        }
+
+        /* Ambient room texture */
+        #stage::after {
+            content: ''; position: absolute; inset: 0; z-index: 0;
+            background:
+                radial-gradient(ellipse at 50% 30%, rgba(255,255,210,0.04) 0%, transparent 65%);
+            pointer-events: none;
+        }
+
+        /* ── ARTWORK STRIP (horizontal scroll) ── */
+        #strip {
+            position: relative; z-index: 2;
+            display: flex; align-items: center; justify-content: center;
+            gap: 12vw;
+            transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: transform;
+        }
+
+        .artwork-card {
+            flex: 0 0 auto;
+            cursor: pointer;
+            position: relative;
+            transition: transform 0.5s cubic-bezier(0.16,1,0.3,1),
+                        opacity 0.5s ease;
+        }
+
+        /* Side cards appear smaller and dimmed */
+        .artwork-card.side { transform: scale(0.78); opacity: 0.35; }
+        .artwork-card.far  { transform: scale(0.6);  opacity: 0.15; }
+
+        .artwork-card img {
+            display: block;
+            width: 36vw;
+            max-width: 520px;
+            height: 64vh;
+            max-height: 720px;
+            object-fit: cover;
+            box-shadow: 0 40px 100px rgba(0,0,0,0.7);
+            transition: filter 0.6s ease, box-shadow 0.6s ease;
+            filter: brightness(0.92);
+        }
+
+        /* Center / focused card */
+        .artwork-card.center img {
+            filter: brightness(1.15) contrast(1.06) saturate(1.1);
+            box-shadow:
+                0 0 60px rgba(255,255,255,0.18),
+                0 60px 120px rgba(0,0,0,0.8);
+        }
+
+        /* Scan line (hover only, not in focus mode) */
+        .scan {
+            position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+            background: rgba(255,255,255,0.55);
+            box-shadow: 0 0 14px rgba(255,255,255,0.9);
+            opacity: 0; pointer-events: none; z-index: 5;
+        }
+        .artwork-card:not(.center):hover .scan {
+            opacity: 1;
+            animation: scan-run 2s linear infinite;
+        }
+        @keyframes scan-run { from { top: 0; } to { top: 100%; } }
+
+        /* Lamp highlight glow above active card */
+        .artwork-card::before {
+            content: '';
+            position: absolute; top: -120px; left: 50%;
+            transform: translateX(-50%);
+            width: 200%; height: 120px;
+            background: radial-gradient(ellipse at bottom, rgba(255,255,220,0.28) 0%, transparent 70%);
+            filter: blur(20px);
+            opacity: 0;
+            transition: opacity 0.8s ease;
+            pointer-events: none; z-index: 3;
+        }
+        .artwork-card.center::before { opacity: 1; }
+
+        /* ── CAPTION ── */
+        #caption {
+            position: fixed; bottom: 4rem; left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        #caption .cap-title {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px; letter-spacing: 5px; text-transform: uppercase;
+            color: rgba(255,255,255,0.75);
+        }
+        #caption .cap-desc {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px; letter-spacing: 2px;
+            color: rgba(255,255,255,0.35);
+            margin-top: 0.4rem;
+        }
+
+        /* ── HUD ── */
+        #hud {
+            position: fixed; inset: 0; z-index: 200;
+            padding: 2rem 2.5rem;
+            display: flex; flex-direction: column; justify-content: space-between;
+            pointer-events: none;
+        }
+        #hud .hud-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        #hud .hud-bot { display: flex; justify-content: space-between; align-items: flex-end; }
+
+        .hud-btn {
+            pointer-events: auto;
+            background: none; border: none; cursor: pointer;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px; letter-spacing: 4px; text-transform: uppercase;
+            color: rgba(255,255,255,0.45);
+            transition: color 0.3s;
+        }
+        .hud-btn:hover { color: rgba(255,255,255,1); }
+
+        .hud-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 9px; letter-spacing: 3px; text-transform: uppercase;
+            color: rgba(255,255,255,0.2);
+        }
+
+        /* ── ARROWS ── */
+        .nav-arrow {
+            position: fixed; top: 50%; z-index: 200;
+            transform: translateY(-50%);
+            background: none; border: none; cursor: pointer;
+            color: rgba(255,255,255,0.5);
+            font-size: 28px; font-weight: 200;
+            transition: color 0.3s, transform 0.3s;
+            padding: 1rem 2rem;
+            display: none;
+        }
+        .nav-arrow:hover { color: #fff; }
+        .nav-arrow.on { display: block; }
+        #arr-l { left: 0; }
+        #arr-l:hover { transform: translateY(-50%) translateX(-3px); }
+        #arr-r { right: 0; }
+        #arr-r:hover { transform: translateY(-50%) translateX(3px); }
+
+        /* ── DOT NAV ── */
+        #dots {
+            position: fixed; bottom: 2rem; left: 50%;
+            transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 200;
+        }
+        .dot {
+            width: 5px; height: 5px; border-radius: 50%;
+            background: rgba(255,255,255,0.25);
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .dot.on { background: rgba(255,255,255,0.85); transform: scale(1.4); }
+
+        /* ── AUDIO ── */
+        .audio-ctl {
+            display: flex; align-items: flex-end; gap: 2px; height: 16px;
+            cursor: pointer;
+        }
+        .a-bar {
+            width: 2px; background: rgba(255,255,255,0.5); height: 3px;
+            animation: awave 0.9s ease-in-out infinite alternate;
+        }
+        @keyframes awave { to { height: 14px; } }
+    </style>
+</head>
+
+<body>
+    <!-- LOADER -->
+    <div id="loader">
+        <div class="l-label" id="l-label">Loading</div>
+        <div class="l-track"><div class="l-fill" id="lfill"></div></div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="nav_component">
+        <div class="nav_container">
+            <a href="../../index.html" class="text-style-nav">
+                <span class="hover-split-text">
+                    <span class="text-inner">TATC</span>
+                    <span class="text-outer">TATC</span>
+                </span>
+            </a>
+            <div class="nav_button" id="nav_button-menu">
+                <div></div><div></div><div></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- GALLERY STAGE -->
+    <div id="stage">
+        <div id="strip"></div>
+    </div>
+
+    <!-- CAPTION -->
+    <div id="caption">
+        <div class="cap-title" id="cap-title">—</div>
+        <div class="cap-desc" id="cap-desc">—</div>
+    </div>
+
+    <!-- ARROWS -->
+    <button class="nav-arrow" id="arr-l">←</button>
+    <button class="nav-arrow" id="arr-r">→</button>
+
+    <!-- DOTS -->
+    <div id="dots"></div>
+
+    <!-- HUD -->
+    <div id="hud">
+        <div class="hud-top">
+            <div>
+                <div class="hud-label" id="proj-title">—</div>
+                <div class="hud-label" id="proj-year" style="opacity:0.5; margin-top:0.3rem">—</div>
+            </div>
+            <button class="hud-btn" id="btn-exit">Exit ↗</button>
+        </div>
+        <div class="hud-bot">
+            <div class="audio-ctl" id="audio-btn">
+                <div class="a-bar" style="animation-duration:.7s"></div>
+                <div class="a-bar" style="animation-duration:1s;animation-delay:.15s"></div>
+                <div class="a-bar" style="animation-duration:.85s;animation-delay:.3s"></div>
+                <div class="a-bar" style="animation-duration:1.2s;animation-delay:.05s"></div>
+            </div>
+            <div class="hud-label" id="proj-credits">—</div>
+        </div>
+    </div>
+
+    <!-- MENU -->
+    <nav class="nav_menu">
+        <div class="nav_container nav_menu-container">
+            <div class="nav_list">
+                <a href="../../blog.html" class="text-style-nav nav_link">
+                    <span class="hover-split-text"><span class="text-inner">The gist</span><span class="text-outer">The gist</span></span>
+                </a>
+                <a href="../../projects.html" class="text-style-nav nav_link">
+                    <span class="hover-split-text"><span class="text-inner">Projects</span><span class="text-outer">Projects</span></span>
+                </a>
+                <a href="../../about.html" class="text-style-nav nav_link">
+                    <span class="hover-split-text"><span class="text-inner">Info</span><span class="text-outer">Info</span></span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <audio id="audio" loop></audio>
+
+    <script src="../../https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="../../script.js"></script>
+    <script>
+    (async function () {
+
+        /* ── Load project.json ─────────────────────── */
+        let PROJECT;
+        try {
+            const res = await fetch('project.json');
+            PROJECT = await res.json();
+        } catch (e) {
+            console.error('[Gallery] Could not load project.json', e);
+            return;
+        }
+
+        /* ── Loader animation ─────────────────────── */
+        const lfill = document.getElementById('lfill');
+        const loader = document.getElementById('loader');
+        document.getElementById('l-label').textContent = PROJECT.title;
+        let prog = 0;
+        const li = setInterval(() => {
+            prog += Math.random() * 16;
+            if (prog >= 100) {
+                prog = 100; clearInterval(li);
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    setTimeout(() => loader.remove(), 900);
+                }, 300);
+            }
+            lfill.style.width = prog + '%';
+        }, 55);
+
+        /* ── Populate HUD ─────────────────────────── */
+        document.getElementById('proj-title').textContent = PROJECT.title.toUpperCase();
+        document.getElementById('proj-year').textContent  = PROJECT.year;
+        document.getElementById('proj-credits').textContent = PROJECT.credits;
+        document.title = `${PROJECT.title} — TATC`;
+
+        /* ── Build artwork cards ──────────────────── */
+        const strip = document.getElementById('strip');
+        const basePath = '';
+        PROJECT.artworks.forEach((art, i) => {
+            const card = document.createElement('div');
+            card.className = 'artwork-card';
+            card.dataset.idx = i;
+            card.innerHTML = `
+                <div class="scan"></div>
+                <img src="${basePath}${art.src}" alt="${art.title}" loading="lazy">
+            `;
+            strip.appendChild(card);
+        });
+        const cards = document.querySelectorAll('.artwork-card');
+
+        /* ── Build dots ───────────────────────────── */
+        const dotsEl = document.getElementById('dots');
+        PROJECT.artworks.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot'; d.dataset.idx = i;
+            d.addEventListener('click', () => goTo(i));
+            dotsEl.appendChild(d);
+        });
+        const dots = document.querySelectorAll('.dot');
+
+        /* ── State ────────────────────────────────── */
+        let current = 0;
+        const total = PROJECT.artworks.length;
+
+        /* ── Navigate ─────────────────────────────── */
+        function goTo(idx) {
+            current = Math.max(0, Math.min(total - 1, idx));
+            render();
+        }
+
+        function render() {
+            /* Position strip */
+            const cardW = cards[0]?.offsetWidth || 520;
+            const gap = window.innerWidth * 0.12;
+            const offset = current * (cardW + gap);
+            strip.style.transform = `translateX(${-offset}px)`;
+
+            /* Card states */
+            cards.forEach((c, i) => {
+                c.classList.remove('center', 'side', 'far');
+                const diff = Math.abs(i - current);
+                if (diff === 0) c.classList.add('center');
+                else if (diff === 1) c.classList.add('side');
+                else c.classList.add('far');
+            });
+
+            /* Dots */
+            dots.forEach((d, i) => d.classList.toggle('on', i === current));
+
+            /* Arrows */
+            const al = document.getElementById('arr-l');
+            const ar = document.getElementById('arr-r');
+            al.classList.toggle('on', current > 0);
+            ar.classList.toggle('on', current < total - 1);
+
+            /* Caption */
+            const art = PROJECT.artworks[current];
+            document.getElementById('cap-title').textContent = art.title.toUpperCase();
+            document.getElementById('cap-desc').textContent  = art.description || '';
+        }
+
+        /* ── Arrow clicks ─────────────────────────── */
+        document.getElementById('arr-l').addEventListener('click', () => goTo(current - 1));
+        document.getElementById('arr-r').addEventListener('click', () => goTo(current + 1));
+
+        /* ── Keyboard ─────────────────────────────── */
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(current - 1); }
+            if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+            if (e.key === 'Escape') {
+                if (document.referrer.includes(window.location.host)) history.back();
+                else window.location.href = '../../index.html';
+            }
+        });
+
+        /* ── Card click — center first, then detail view ── */
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                const idx = parseInt(card.dataset.idx);
+                if (idx !== current) { goTo(idx); return; }
+                /* Already centered — could open detail in future */
+            });
+        });
+
+        /* ── Mouse drag / swipe ───────────────────── */
+        let dragStart = null;
+        strip.addEventListener('pointerdown', e => { dragStart = e.clientX; });
+        strip.addEventListener('pointerup',   e => {
+            if (dragStart === null) return;
+            const dx = e.clientX - dragStart;
+            if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+            dragStart = null;
+        });
+
+        /* ── Touch swipe ──────────────────────────── */
+        let touchX = null;
+        strip.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+        strip.addEventListener('touchend',   e => {
+            if (touchX === null) return;
+            const dx = e.changedTouches[0].clientX - touchX;
+            if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+            touchX = null;
+        });
+
+        /* ── Exit ─────────────────────────────────── */
+        document.getElementById('btn-exit').addEventListener('click', () => {
+            if (document.referrer && document.referrer.includes(window.location.host)) history.back();
+            else window.location.href = '../../index.html';
+        });
+
+        /* ── Audio ────────────────────────────────── */
+        const audioEl = document.getElementById('audio');
+        const audioBnt = document.getElementById('audio-btn');
+        const aBars = document.querySelectorAll('.a-bar');
+        let playing = false;
+        if (PROJECT.audio) audioEl.src = PROJECT.audio;
+        aBars.forEach(b => b.style.animationPlayState = 'paused');
+        audioBnt.style.opacity = '0.4';
+        audioBnt.addEventListener('click', () => {
+            if (!playing) {
+                audioEl.play().catch(() => {});
+                aBars.forEach(b => b.style.animationPlayState = 'running');
+                audioBnt.style.opacity = '1';
+            } else {
+                audioEl.pause();
+                aBars.forEach(b => b.style.animationPlayState = 'paused');
+                audioBnt.style.opacity = '0.4';
+            }
+            playing = !playing;
+        });
+
+        /* ── Initial render ───────────────────────── */
+        render();
+
+    })();
+    </script>
+</body>
+</html>

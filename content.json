@@ -1,0 +1,227 @@
+{
+  "global": {
+    "brand": "TATC",
+    "tagline": "ISEEASI",
+    "year": "2026",
+    "nav": {
+      "blog": "The Gist",
+      "projects": "Projects",
+      "info": "Info"
+    },
+    "social": {
+      "twitter": "https://x.com",
+      "email": "mailto:ejemplo@correo.com",
+      "instagram": "https://instagram.com"
+    }
+  },
+  "home": {
+    "meta_title": "TATC - Portfolio",
+    "loader_text": "IN A WORLD OF SAMENESS AND WIDESPREAD INFLUENCE, THROUGH ALL THE CLUTTER (TATC) EXISTS TO HELP PEOPLE UNCOVER WHAT MATTERS TO THEM. WE BELIEVE IN THE POWER OF INDEPENDENT THINKING-TO RESIST WHAT'S EVERYWHERE, EASY, OR EXPECTED.",
+    "loader_skip_label": "SKIP",
+    "hero_headline": "Through all the clutter"
+  },
+  "blog": {
+    "meta_title": "TATC - The Gist",
+    "page_label": "Selected Journal",
+    "page_title": "The Gist",
+    "posts": [
+      {
+        "slug": "post-1",
+        "date": "15.03.26",
+        "title": "Lorem Ipsum Dolor",
+        "summary": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        "url": "post.html?slug=post-1"
+      },
+      {
+        "slug": "post-2",
+        "date": "10.03.26",
+        "title": "Consectetur Adipiscing",
+        "summary": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+        "url": "post.html?slug=post-2"
+      },
+      {
+        "slug": "post-3",
+        "date": "02.03.26",
+        "title": "Tempor Incididunt",
+        "summary": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+        "url": "post.html?slug=post-3"
+      }
+    ]
+  },
+  "post": {
+    "posts": {
+      "post-1": {
+        "meta_title": "TATC — Lorem Ipsum Dolor",
+        "date": "15.03.26",
+        "subject": "Philosophy",
+        "title": "Lorem Ipsum Dolor Sit Amet",
+        "body": [
+          { "type": "paragraph", "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." },
+          { "type": "image", "src": "assets/artworks/a_sweet_kid_fragmented_identity_1773578325456.png", "alt": "Fragment", "caption": "Fig 01. Lorem ipsum placeholder" },
+          { "type": "paragraph", "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." },
+          { "type": "pullquote", "text": "\"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.\"" },
+          { "type": "paragraph", "text": "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo." }
+        ],
+        "footer_label": "TATC — THE GIST",
+        "footer_credit": "ISEEASI — 2026"
+      },
+      "post-2": {
+        "meta_title": "TATC — Consectetur Adipiscing",
+        "date": "10.03.26",
+        "subject": "Narrative",
+        "title": "Consectetur Adipiscing Elit",
+        "body": [
+          { "type": "paragraph", "text": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." },
+          { "type": "pullquote", "text": "\"Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit.\"" },
+          { "type": "paragraph", "text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua." }
+        ],
+        "footer_label": "TATC — THE GIST",
+        "footer_credit": "ISEEASI — 2026"
+      },
+      "post-3": {
+        "meta_title": "TATC — Tempor Incididunt",
+        "date": "02.03.26",
+        "subject": "Process",
+        "title": "Tempor Incididunt Labore",
+        "body": [
+          { "type": "paragraph", "text": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium." },
+          { "type": "image", "src": "assets/artworks/a_sweet_kid_solitary_confinement_1773578370915.png", "alt": "Solitary", "caption": "Fig 01. Solitary confinement study" },
+          { "type": "paragraph", "text": "Totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit." }
+        ],
+        "footer_label": "TATC — THE GIST",
+        "footer_credit": "ISEEASI — 2026"
+      }
+    }
+  },
+  "projects": {
+    "meta_title": "TATC - Projects",
+    "items": [
+      {
+        "id": 1,
+        "src": "projects/a-sweet-kid-cdmx/images/proyecto_1.jpg",
+        "title": "A Sweet Kid",
+        "desc": "Multimedia installation",
+        "date": "2025",
+        "loc": "Mexico City \u2014 Salon Silicon",
+        "link": "a-sweet-kid.html"
+      },
+      {
+        "id": 2,
+        "iframe": "cube-scene.html",
+        "title": "A Sweet Kid Online",
+        "desc": "Virtual Experience",
+        "date": "2025",
+        "loc": "",
+        "link": "a-sweet-kid-online.html"
+      }
+    ]
+  },
+  "projects_detail": {
+    "a-sweet-kid": {
+      "meta_title": "A Sweet Kid — TATC",
+      "title": "A Sweet Kid",
+      "subtitle": "Mexico City Art Week 2025 — Salon Silicon",
+      "date": "2025",
+      "location": "Mexico City — Salon Silicon",
+      "medium": "Multimedia Installation",
+      "body": [
+        "A Sweet Kid was a multimedia installation that explored the fractured reality of living a double life. The 6' x 8' sterile padded space replicated an institutional solitary confinement cell with short film script pages lining the exterior to give visitors narrative context before entering.",
+        "Inside, they experienced a 13-minute spatial audio journey of evolving negative self-talk alongside commissioned paintings by artist Shelby Keierleber that explored fragmented identity.",
+        "This marked Iseasi's first installation and spatial audio experience, building on her previous work examining personal trauma and social masks. The environment created a space where visitors could confront their own experiences of authenticity and performance in daily life."
+      ],
+      "immersive_url": "a-sweet-kid-online.html",
+      "immersive_cta_label": "Enter Immersive Experience",
+      "gallery_images": [
+        "assets/artworks/a_sweet_kid_fragmented_identity_1773578325456.png",
+        "assets/artworks/a_sweet_kid_negative_self_talk_1773578346007.png",
+        "assets/artworks/a_sweet_kid_solitary_confinement_1773578370915.png"
+      ]
+    },
+    "a-sweet-kid-cdmx": {
+      "meta_title": "A Sweet Kid CDMX — TATC",
+      "title": "A Sweet Kid CDMX",
+      "subtitle": "Edición especial",
+      "date": "2024",
+      "location": "CDMX",
+      "medium": "Exhibición",
+      "body": [
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+      ],
+      "gallery_images": [
+        "assets/images/_2.webp"
+      ]
+    }
+  },
+  "gallery_3d": {
+    "meta_title": "A Sweet Kid — Immersive POV Experience",
+    "hud_label": "A SWEET KID — IMMERSIVE POV",
+    "loader_text": "SPACE SYNC",
+    "return_label": "Return to space",
+    "audio_src": "https://assets.mixkit.co/music/preview/mixkit-ambient-dream-12.mp3",
+    "light_default_intensity": 70,
+    "credits": "ISEEASI // 2026",
+    "artworks": [
+      { "id": 0, "wall": "front", "title": "Fragmented Identity",  "alt": "Fragmented Identity",  "src": "assets/artworks/a_sweet_kid_fragmented_identity_1773578325456.png" },
+      { "id": 1, "wall": "left",  "title": "Negative Self Talk",   "alt": "Negative Self Talk",   "src": "assets/artworks/a_sweet_kid_negative_self_talk_1773578346007.png" },
+      { "id": 2, "wall": "right", "title": "Solitary Confinement", "alt": "Solitary Confinement", "src": "assets/artworks/a_sweet_kid_solitary_confinement_1773578370915.png" }
+    ]
+  },
+  "typography": {
+    "heading_h1": {
+      "font_size": "14cqw",
+      "font_weight": "900",
+      "letter_spacing": "-0.04em",
+      "text_transform": "uppercase",
+      "font_family": "Inter"
+    },
+    "heading_h2": {
+      "font_size": "2rem",
+      "font_weight": "700",
+      "letter_spacing": "-0.03em",
+      "text_transform": "uppercase",
+      "font_family": "Inter"
+    },
+    "nav": {
+      "font_size": "0.85rem",
+      "font_weight": "500",
+      "letter_spacing": "0.01em",
+      "text_transform": "none",
+      "font_family": "Inter"
+    },
+    "body": {
+      "font_size": "1rem",
+      "font_weight": "400",
+      "letter_spacing": "0em",
+      "text_transform": "none",
+      "font_family": "Inter"
+    },
+    "label": {
+      "font_size": "0.7rem",
+      "font_weight": "400",
+      "letter_spacing": "4px",
+      "text_transform": "uppercase",
+      "font_family": "IBM Plex Mono"
+    }
+  },
+  "artist": {
+    "meta_title": "TATC - Artist",
+    "label": "THE ARTIST",
+    "name": "ISEEASI",
+    "bio1": "ISEEASI is a multimedia artist who builds worlds that encourage self-exploration and connection through shared experience. Moving deliberately away from mass consumption mindsets, she embraces authentic expression developed through thoughtful collaboration with other creatives.",
+    "bio2": "At the heart of her work lies a mission to reveal people to themselves at their own pace. Though her pieces often emerge from periods of isolation, they paradoxically seek to validate the shared nature of personal struggles."
+  },
+  "security": {
+    "gate_password": "sweet",
+    "gate_title": "ASWEETKID",
+    "gate_description": "LAUNCHING ON FEBRUARY 7TH AT 7PM CST",
+    "pages": {
+      "projects.html": "public",
+      "artist.html": "public",
+      "blog.html": "public",
+      "a-sweet-kid-online.html": "private"
+    },
+    "page_passwords": {
+      "a-sweet-kid-online.html": ""
+    }
+  }
+}

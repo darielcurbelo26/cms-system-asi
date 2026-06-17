@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TATC - Page Not Found</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        [gallery-404] {
+            display: none;
+        }
+
+        .gallery-image-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 5;
+            opacity: 0;
+            transition: opacity 0.5s ease-out;
+            will-change: transform;
+        }
+
+        .gallery-image-wrapper.ready {
+            opacity: 1;
+        }
+
+        .gallery-image {
+            width: clamp(150px, 10vw, 350px);
+            height: auto;
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
+            border-radius: 0px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .gallery-image {
+                width: 80px !important;
+                max-width: 80px;
+            }
+        }
+
+        .status-eye {
+            width: 1.1rem;
+            height: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            transition: opacity 0.2s ease, color var(--theme-transition);
+        }
+
+        .status-eye:hover {
+            opacity: 0.6;
+        }
+
+        .not-found-bg {
+            opacity: 0.5 !important;
+            font-weight: 400 !important;
+            z-index: -1 !important;
+            letter-spacing: -0.02em !important;
+        }
+
+        @media (max-width: 768px) {
+            .not-found-bg {
+                filter: blur(6px) !important;
+            }
+        }
+
+        /* Ensure TATC logo is visible in both themes via difference blending */
+        .nav_component .difference-text {
+            color: white !important;
+        }
+
+        .not-found-content {
+            color: white !important;
+            mix-blend-mode: difference;
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .not-found-title {
+            color: white !important;
+            font-family: "Inter", sans-serif;
+            font-weight: 600 !important;
+            font-size: clamp(8rem, 25vw, 18rem);
+            letter-spacing: -0.02em;
+            line-height: 0.8;
+            margin: 0;
+        }
+
+        .not-found-sub {
+            color: white !important;
+            text-decoration: none;
+            font-family: "IBM Plex Mono", monospace;
+            font-size: 0.85rem;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            opacity: 0.7;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .not-found-sub:hover {
+            opacity: 1;
+            text-decoration: none;
+            transform: translateX(-4px);
+        }
+    </style>
+    <script src="design-system.js"></script>
+</head>
+
+<body class="body_fixed body-404">
+
+    <!-- Red bg: FIXED at the absolute bottom -->
+    <div class="not-found-bg" style="z-index: -1;">404</div>
+
+    <div class="transition-overlay" style="background: black;"></div>
+
+    <nav class="nav_component">
+        <div class="nav_container">
+            <a href="index.html" class="text-style-nav difference-text">
+                <span class="hover-split-text">
+                    <span class="text-inner">TATC</span>
+                    <span class="text-outer">TATC</span>
+                </span>
+            </a>
+            <div class="nav_button difference-text" id="nav_button-menu">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-wrapper">
+        <div class="fixed-controls_component">
+            <!-- Gallery Toggle (Eye) -->
+            <div id="gallery-toggle" class="status-eye" title="Toggle Gallery">
+                <!-- Eye Open Icon -->
+                <svg id="eye-open-icon" viewBox="0 0 24 24" width="88%" height="100%" stroke="currentColor"
+                    stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <!-- Eye Closed Icon -->
+                <svg id="eye-closed-icon" viewBox="0 0 24 24" width="100%" height="100%" stroke="currentColor"
+                    stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"
+                    style="display: none;">
+                    <path
+                        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24">
+                    </path>
+                    <line x1="1" y1="1" x2="23" y2="23"></line>
+                </svg>
+            </div>
+            <!-- Standard Theme Toggle -->
+            <div class="icon-button is-square" title="Toggle Theme"></div>
+        </div>
+
+        <!-- Right Navbar Sidebar -->
+        <nav class="nav_menu">
+            <div class="nav_container nav_menu-container">
+                <div class="nav_list">
+                    <a href="blog.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">The gist</span>
+                            <span class="text-outer">The gist</span>
+                        </span>
+                    </a>
+                    <a href="projects.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">Projects</span>
+                            <span class="text-outer">Projects</span>
+                        </span>
+                    </a>
+                    <a href="about.html" class="text-style-nav nav_link">
+                        <span class="hover-split-text">
+                            <span class="text-inner">Info</span>
+                            <span class="text-outer">Info</span>
+                        </span>
+                    </a>
+                </div>
+                <div class="nav_list social_list">
+                    <a href="https://x.com" target="_blank" class="social_link"><img src="assets/social_icons/xx.svg"
+                            alt="xx"></a>
+                    <a href="mailto:ejemplo@correo.com" class="social_link"><img src="assets/social_icons/mail.svg"
+                            alt="mail"></a>
+                    <a href="https://instagram.com" target="_blank" class="social_link"><img
+                            src="assets/social_icons/instagram.svg" alt="instagram"></a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- MAIN INTERACTIVE LAYER: Contains only images -->
+        <div id="interactive-container"
+            style="position: absolute; inset: 0; z-index: 1; pointer-events: none; background: transparent;">
+            <!-- Images injected here by script -->
+        </div>
+
+        <div class="not-found-content difference-text"
+            style="pointer-events: none; position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 2;">
+            <a href="index.html" class="not-found-sub" style="pointer-events: auto;">← Return to home</a>
+            <h1 class="not-found-title">404</h1>
+            <p class="not-found-sub">The page you're looking for is not here</p>
+        </div>
+    </div>
+
+    <!-- GSAP debe cargarse ANTES de script.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="script.js"></script>
+
+    <script>
+        (() => {
+            const CONFIG = {
+                trailCount: 5,
+                smoothness: 0.15,
+                imageCycleSpeed: 220
+            };
+
+            async function init() {
+                const TOTAL_IMAGES = 406;
+                const imagesSrc = Array.from({ length: TOTAL_IMAGES }, (_, i) => `assets/images/_${i + 1}.webp`);
+
+                // Shuffle it so it's random
+                for (let i = imagesSrc.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [imagesSrc[i], imagesSrc[j]] = [imagesSrc[j], imagesSrc[i]];
+                }
+
+                let mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+
+                const positions = Array.from({ length: CONFIG.trailCount }, () => ({
+                    x: mouse.x,
+                    y: mouse.y
+                }));
+
+                const imageElements = [];
+                const itemsToCreate = CONFIG.trailCount;
+                const isolatedLayer = document.getElementById('interactive-container');
+
+                for (let i = 0; i < itemsToCreate; i++) {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'gallery-image-wrapper';
+                    wrapper.style.zIndex = 5 - i;
+
+                    const img = document.createElement('img');
+                    img.className = 'gallery-image';
+                    img.draggable = false;
+                    img.src = imagesSrc[i % imagesSrc.length];
+
+                    wrapper.appendChild(img);
+                    if (isolatedLayer) isolatedLayer.appendChild(wrapper);
+                    else document.body.appendChild(wrapper);
+                    imageElements.push({ wrapper, img });
+                }
+
+                await Promise.all(
+                    imageElements.map(el => {
+                        return new Promise((resolve) => {
+                            if (el.img.complete) resolve();
+                            else {
+                                el.img.onload = resolve;
+                                el.img.onerror = resolve;
+                            }
+                        });
+                    })
+                );
+
+                setTimeout(() => {
+                    imageElements.forEach(el => el.wrapper.classList.add('ready'));
+                }, 100);
+
+                let cycleOffset = 0;
+
+                setInterval(() => {
+                    cycleOffset++;
+
+                    imageElements.forEach((el, index) => {
+                        const newImageIndex = (index + cycleOffset) % imagesSrc.length;
+                        el.img.src = imagesSrc[newImageIndex];
+                    });
+
+                }, CONFIG.imageCycleSpeed);
+
+
+                const updateMouse = (x, y) => {
+                    mouse.x = x;
+                    mouse.y = y;
+                };
+
+                let isMobile = window.innerWidth <= 768;
+                let isGalleryEnabled = true;
+
+                const applyMobileVisibility = () => {
+                    // Mobile: only show the first image to avoid performance/clutter issues
+                    for (let i = 1; i < itemsToCreate; i++) {
+                        imageElements[i].wrapper.style.display = isMobile ? 'none' : 'block';
+                    }
+
+                    if (isMobile) {
+                        imageElements.forEach(el => {
+                            el.wrapper.style.pointerEvents = 'auto';
+                            el.wrapper.style.cursor = 'grab';
+                        });
+
+                        const offsetX = window.innerWidth - 52;
+                        const offsetY = window.innerHeight - 92;
+                        updateMouse(offsetX, offsetY);
+                    } else {
+                        imageElements.forEach(el => {
+                            el.wrapper.style.pointerEvents = 'none';
+                            el.wrapper.style.cursor = '';
+                        });
+                    }
+                };
+
+                // --- Drag and Snap Logic for Mobile ---
+                let isDragging = false;
+                let dragInitialX, dragInitialY;
+
+                const onDragStart = (e) => {
+                    if (!isMobile || !isGalleryEnabled) return;
+                    isDragging = true;
+                    const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                    dragInitialX = clientX - mouse.x;
+                    dragInitialY = clientY - mouse.y;
+                    imageElements[0].wrapper.style.cursor = 'grabbing';
+                };
+
+                const onDragMove = (e) => {
+                    if (!isDragging) return;
+                    e.preventDefault();
+                    const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+                    const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+                    updateMouse(clientX - dragInitialX, clientY - dragInitialY);
+                };
+
+                const onDragEnd = () => {
+                    if (!isDragging) return;
+                    isDragging = false;
+                    imageElements[0].wrapper.style.cursor = 'grab';
+
+                    // Symmetrical margins base on existing values:
+                    // Left/Right: 52px (12px margin + 40px half-width)
+                    // Top/Bottom: 92px (32px margin + 60px half-height)
+                    const marginX = 52;
+                    const marginY = 92;
+
+                    const dists = [
+                        { side: 'left', val: mouse.x - marginX },
+                        { side: 'right', val: (window.innerWidth - marginX) - mouse.x },
+                        { side: 'top', val: mouse.y - marginY },
+                        { side: 'bottom', val: (window.innerHeight - marginY) - mouse.y }
+                    ];
+
+                    // Find closest edge
+                    let closestSide = dists.reduce((prev, curr) => (curr.val < prev.val ? curr : prev));
+
+                    let targetX = mouse.x;
+                    let targetY = mouse.y;
+
+                    // Apply snap based on closest edge
+                    if (closestSide.side === 'left') {
+                        targetX = marginX;
+                        // Avoid bottom-left: if too low, push to top-left or bottom-right
+                        if (targetY > window.innerHeight - marginY - 100) {
+                            targetY = window.innerHeight - marginY;
+                            targetX = window.innerWidth - marginX;
+                        }
+                    } else if (closestSide.side === 'right') {
+                        targetX = window.innerWidth - marginX;
+                    } else if (closestSide.side === 'top') {
+                        targetY = marginY;
+                    } else if (closestSide.side === 'bottom') {
+                        targetY = window.innerHeight - marginY;
+                        // Avoid bottom-left: if too far left, push to right
+                        if (targetX < window.innerWidth / 2) {
+                            targetX = window.innerWidth - marginX;
+                        }
+                    }
+
+                    // Constrain Y within vertical margins
+                    targetY = Math.max(marginY, Math.min(window.innerHeight - marginY, targetY));
+                    // Constrain X within horizontal margins
+                    targetX = Math.max(marginX, Math.min(window.innerWidth - marginX, targetX));
+
+                    // Animate to edge/corner
+                    gsap.to(mouse, {
+                        x: targetX,
+                        y: targetY,
+                        duration: 0.6,
+                        ease: "power2.out"
+                    });
+                };
+
+                imageElements[0].wrapper.addEventListener('mousedown', onDragStart);
+                imageElements[0].wrapper.addEventListener('touchstart', onDragStart, { passive: false });
+                window.addEventListener('mousemove', onDragMove);
+                window.addEventListener('touchmove', onDragMove, { passive: false });
+                window.addEventListener('mouseup', onDragEnd);
+                window.addEventListener('touchend', onDragEnd);
+
+                window.addEventListener('mousemove', e => {
+                    if (isMobile) return;
+                    updateMouse(e.clientX, e.clientY);
+                });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (isMobile) return;
+                    updateMouse(e.touches[0].clientX, e.touches[0].clientY);
+                }, { passive: true });
+
+                window.addEventListener('resize', () => {
+                    isMobile = window.innerWidth <= 768;
+                    applyMobileVisibility();
+                });
+
+                applyMobileVisibility();
+
+                // --- Eye toggle: switches between trail mode and HIDDEN ---
+                const toggleBtn = document.getElementById('gallery-toggle');
+                const eyeOpen = document.getElementById('eye-open-icon');
+                const eyeClosed = document.getElementById('eye-closed-icon');
+
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', () => {
+                        isGalleryEnabled = !isGalleryEnabled;
+
+                        if (!isGalleryEnabled) {
+                            // HIDE GALLERY
+                            if (eyeOpen) eyeOpen.style.display = 'none';
+                            if (eyeClosed) eyeClosed.style.display = 'block';
+                            imageElements.forEach(el => {
+                                el.wrapper.style.opacity = '0';
+                                el.wrapper.style.pointerEvents = 'none';
+                            });
+                        } else {
+                            // SHOW GALLERY
+                            if (eyeOpen) eyeOpen.style.display = 'block';
+                            if (eyeClosed) eyeClosed.style.display = 'none';
+                            imageElements.forEach(el => {
+                                el.wrapper.style.opacity = '1';
+                                if (isMobile) {
+                                    el.wrapper.style.pointerEvents = 'auto';
+                                }
+                            });
+                        }
+                    });
+                }
+
+                function animate() {
+                    if (!isGalleryEnabled) {
+                        requestAnimationFrame(animate);
+                        return;
+                    }
+
+                    positions[0].x += (mouse.x - positions[0].x) * CONFIG.smoothness;
+                    positions[0].y += (mouse.y - positions[0].y) * CONFIG.smoothness;
+
+                    imageElements[0].wrapper.style.transform =
+                        `translate3d(${positions[0].x}px, ${positions[0].y}px, 0) translate(-50%, -50%)`;
+
+                    for (let i = 1; i < itemsToCreate; i++) {
+                        positions[i].x += (positions[i - 1].x - positions[i].x) * CONFIG.smoothness;
+                        positions[i].y += (positions[i - 1].y - positions[i].y) * CONFIG.smoothness;
+
+                        imageElements[i].wrapper.style.transform =
+                            `translate3d(${positions[i].x}px, ${positions[i].y}px, 0) translate(-50%, -50%)`;
+                    }
+
+                    requestAnimationFrame(animate);
+                }
+
+                animate();
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+        })();
+    </script>
+</body>
+
+</html>

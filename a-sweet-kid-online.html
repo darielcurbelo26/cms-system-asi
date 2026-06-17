@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Sweet Kid — Immersive</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Inter:ital,slnt,wght@0,0,100..900;1,0,100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="a-sweet-kid-online.css">
+<script src="cms-engine.js"></script>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+<div id="cursor"></div>
+
+<div id="loader">
+  <div class="l-wrap">
+    <div class="l-wordmark">A Sweet Kid</div>
+    <div class="l-bar"><div class="l-fill" id="lfill"></div></div>
+  </div>
+</div>
+
+<!-- HUD -->
+<div id="hud-tl">A Sweet Kid — Immersive</div>
+<div id="hud-tr">
+  <button class="hud-btn" id="btn-audio">Ambient</button>
+  <button class="hud-btn" id="btn-exit">Exit</button>
+</div>
+
+<!-- focused mode top bar -->
+<div id="focus-bar">
+  <button class="fb-prev" id="fb-prev">Prev</button>
+  <span class="fb-count" id="fb-count">1 / 3</span>
+  <button class="fb-next" id="fb-next">Next</button>
+  <span id="focus-sep" aria-hidden="true"></span>
+  <button id="btn-room">Room</button>
+</div>
+
+<div id="caption">
+  <div class="cap-title" id="cap-title"></div>
+  <div class="cap-sub" id="cap-sub"></div>
+</div>
+
+<div id="audio-viz">
+  <div class="a-bar" style="animation-duration:.7s"></div>
+  <div class="a-bar" style="animation-duration:1s"></div>
+  <div class="a-bar" style="animation-duration:.85s"></div>
+  <div class="a-bar" style="animation-duration:1.1s"></div>
+</div>
+<div id="hud-br">ISEEASI — 2026</div>
+
+<div id="hint">Drag to rotate — click to focus</div>
+
+<audio id="audio" loop src="projects/a-sweet-kid/audio/ambient.mp3"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="script.js"></script>
+<script type="module" src="a-sweet-kid-online.js"></script>
+</body>
+</html>

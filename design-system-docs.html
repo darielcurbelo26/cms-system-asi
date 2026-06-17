@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TATC - Design System Documentation</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="design-system.js"></script>
+    <style>
+        /* ----------------------------------------------------------------------
+           DOCS SPECIFIC STYLES 
+           Isolated from global scope to preview cleanly
+           ---------------------------------------------------------------------- */
+        .docs-body {
+            font-family: "Inter", sans-serif;
+            padding: 2rem 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .docs-header {
+            margin-bottom: 3rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+        .docs-header h1 {
+            font-size: 2.5rem;
+            margin: 0;
+            letter-spacing: -0.05em;
+        }
+        .docs-section-title {
+            font-family: "IBM Plex Mono", monospace;
+            text-transform: uppercase;
+            font-size: 1.2rem;
+            margin: 4rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+            opacity: 0.8;
+        }
+        .docs-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        .docs-table th, .docs-table td {
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            vertical-align: top;
+            text-align: left;
+        }
+        .docs-table th {
+            font-family: "IBM Plex Mono", monospace;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            opacity: 0.7;
+            background: rgba(128,128,128,0.1);
+        }
+        .docs-table th:nth-child(1) { width: 30%; }
+        .docs-table th:nth-child(2) { width: 70%; }
+        
+        .docs-class-name {
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #d12255;
+            background: rgba(209, 34, 85, 0.1);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+        
+        .docs-combo-class {
+            color: #007acc;
+            background: rgba(0, 122, 204, 0.1);
+        }
+
+        .docs-desc {
+            font-size: 0.95rem;
+            line-height: 1.4;
+            opacity: 0.8;
+        }
+
+        .docs-preview {
+            position: relative;
+            padding: 2rem 1rem 1rem 1rem;
+            border: 1px dashed var(--border-color);
+            margin-top: 1rem;
+            background-color: var(--bg-color);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .docs-preview::before {
+            content: "PREVIEW";
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: var(--text-color);
+            color: var(--bg-color);
+            font-size: 0.65rem;
+            font-family: "IBM Plex Mono", monospace;
+            padding: 2px 6px;
+            text-transform: uppercase;
+        }
+
+        /* Helpers just for preview boxes so they don't break the table */
+        .docs-preview .nav_component,
+        .docs-preview .fixed-controls_component {
+            position: absolute !important;
+        }
+        .docs-preview .page-wrapper {
+            padding-top: 1rem !important;
+            min-height: auto !important;
+        }
+    </style>
+</head>
+<body class="docs-body">
+
+    <div class="docs-header">
+        <div>
+            <h1>Client-First Design System</h1>
+            <p>Unified Class Nomenclature Documentation.</p>
+        </div>
+        <div class="icon-button is-square" title="Toggle Theme (Global)"></div>
+    </div>
+
+    <p style="opacity: 0.8; max-width: 800px; line-height: 1.6;">
+        This document outlines the modular class structure and global CSS framework used throughout the site (Client-First style). 
+        Ensure you reuse global utilities (`is-`, `layout_`, `text-`) and avoid forcing inline styles.
+    </p>
+
+    <!-- SECTION: TYPOGRAPHY -->
+    <h2 class="docs-section-title">1. Typography & Text</h2>
+    <table class="docs-table">
+        <thead>
+            <tr>
+                <th>Class Name & Specs</th>
+                <th>Visual Preview</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.heading-style-h1</span>
+                    <div class="docs-desc">
+                        Main title (Hero). Centered, uppercase, heavy 14cqw font.<br>
+                        <strong>Expected Parent:</strong> <code>.section_hero</code>
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <h1 class="heading-style-h1" style="font-size: 3rem;">TATC CORE</h1>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name docs-combo-class">.heading-style-h1.is-artist</span>
+                    <div class="docs-desc">
+                        Combo class for H1 adapted for the artist page. Aligned left, smaller in mobile, removes default blur filter.
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <h1 class="heading-style-h1 is-artist" style="font-size: 3rem;">ISEEASI</h1>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.heading-style-h2</span>
+                    <div class="docs-desc">
+                        Subtitles. Centered text. Usually used below the Hero.
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <div class="heading-style-h2">An Immersive Experience</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.text-style-label</span>
+                    <div class="docs-desc">
+                        Categories / Small subtitles. IBM Plex Mono. Low opacity 0.8.
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <span class="text-style-label">OUR VALUES</span>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.text-size-regular</span>
+                    <div class="docs-desc">
+                        Default paragraph. Spaced, IBM Plex, and an ideal maximum reading width (900px).
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <p class="text-size-regular">
+                            We partner with brands who will complement or enhance the discovery process.
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name docs-combo-class">.text-size-regular.is-fluid</span>
+                    <div class="docs-desc">
+                        Combo class. Removes automatic breaks (`white-space: nowrap`) to force cuts only from `<br>`.
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <p class="text-size-regular is-fluid">
+                            Línea uno controlada.<br>Línea dos controlada.
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.text-style-nav</span>
+                    <div class="docs-desc">
+                        Specific text for navigation buttons (Nav and Right Sidebar)
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <span class="text-style-nav">The gist</span>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SECTION: LAYOUTS & CONTAINERS -->
+    <h2 class="docs-section-title">2. Layouts & Structure</h2>
+    <table class="docs-table">
+        <thead>
+            <tr>
+                <th>Class Name & Specs</th>
+                <th>Visual Preview</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.page-wrapper</span>
+                    <div class="docs-desc">
+                        Macro container of the DOM. Applies flex column and adds top padding (`padding-top: 4rem`) to clear the global Nav height.
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview" style="height: 100px;">
+                        <div class="page-wrapper" style="background:#eee; padding-top:1rem; border:1px solid #ccc; color:#000;">.page-wrapper</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.layout_stack</span>
+                    <div class="docs-desc">
+                        Native stack (Flex column with default gap).
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <div class="layout_stack">
+                            <div style="background:#ddd; width:100%; height:20px;"></div>
+                            <div style="background:#ddd; width:100%; height:20px;"></div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.layout_bottom</span>
+                    <div class="docs-desc">
+                        Minimum height container that forces content ("pushes") against the bottom edge of the screen using flex and align-items: flex-end. Used in About and Info.
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview" style="height: 120px;">
+                        <div class="layout_bottom" style="height:100%; min-height:100%; border:1px solid #ddd;">
+                            <span>Contenido debajo</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.about-block</span>
+                    <div class="docs-desc">
+                        Structural modular block that occupies 100% (100vw). Breaks edges using negative margins and generates top lines (border-top).
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <div class="about-block" style="width: auto; margin:0;">
+                            <span class="text-style-label">Partner Title</span>
+                            <p class="text-size-regular">Information paragraph with separator line.</p>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.artist-bottom-section</span>
+                    <div class="docs-desc">
+                        Heavy version of 50dvh strict height with flex-space-between and border top.
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview">
+                        <div class="artist-bottom-section" style="width: auto; margin:0; height: 150px;">
+                            <span>TOP DIV</span>
+                            <span>BOTTOM DIV</span>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- SECTION: COMPONENTS -->
+    <h2 class="docs-section-title">3. Components & UI Elements</h2>
+    <table class="docs-table">
+        <thead>
+            <tr>
+                <th>Class Name & Specs</th>
+                <th>Visual Preview</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.nav_component</span>
+                    <span class="docs-class-name">.nav_container</span>
+                    <div class="docs-desc">
+                        Macro structure of the Fixed Navbar. Uses difference mode (mix-blend-mode).
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview" style="background:#000; height: 80px;">
+                        <nav class="nav_component" style="position:relative; color:#fff;">
+                            <div class="nav_container">
+                                <span class="text-style-nav">TATC LOGO</span>
+                                <div>(Burger)</div>
+                            </div>
+                        </nav>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <span class="docs-class-name">.icon-button.is-square</span>
+                    <span class="docs-class-name">.icon-button.is-cube</span>
+                    <span class="docs-class-name">.icon-button.is-hollow</span>
+                    <div class="docs-desc">
+                        Action buttons in the bottom corner (CSS controls). Solid, SVG outline (cube), or hollow variants. 
+                    </div>
+                </td>
+                <td>
+                    <div class="docs-preview" style="display: flex; gap: 1rem;">
+                        <div class="icon-button is-square"></div>
+                        <div class="icon-button is-cube">
+                            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="30" y="10" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" />
+                                <line x1="10" y1="30" x2="30" y2="10" stroke="currentColor" stroke-width="4" />
+                                <line x1="70" y1="30" x2="90" y2="10" stroke="currentColor" stroke-width="4" />
+                                <line x1="70" y1="90" x2="90" y2="70" stroke="currentColor" stroke-width="4" />
+                                <line x1="10" y1="90" x2="30" y2="70" stroke="currentColor" stroke-width="4" />
+                                <rect x="10" y="30" width="60" height="60" fill="none" stroke="currentColor" stroke-width="4" />
+                            </svg>
+                        </div>
+                        <div class="icon-button is-hollow"></div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        // Funcionalidad interna para el prev visual del Theme Switcher en Docs
+        const docThemeToggle = document.querySelector('.icon-button.is-square');
+        if (docThemeToggle && typeof DesignSystem !== 'undefined') {
+            docThemeToggle.addEventListener('click', () => {
+                DesignSystem.toggleTheme();
+            });
+        }
+    </script>
+</body>
+</html>
