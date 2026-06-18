@@ -64,22 +64,20 @@ Repositorios Git:
 
 ### Repositorio remoto
 - El proyecto CMS se subió a: `https://github.com/darielcurbelo26/cms-system-asi`
-- No hay remote configurado todavía para el repo de WordPress.
+- El repo de WordPress real se subió a: `https://github.com/darielcurbelo26/tatc-wordpress` (2026-06-17).
 
 ### Copia de seguridad recomendada
 Git cubre el tema, pero no la base de datos ni los medios.
 Para una copia de seguridad completa se debe:
-1. Código ya versionado con Git (tema `tatc-headless`).
-2. Subir ese repo a un remoto (GitHub/GitLab/Bitbucket) si se quiere respaldo en la nube.
-3. Exportar la base de datos periódicamente (no hay WP-CLI instalado; usar el PHP/MySQL embebidos de Local — ver rutas en la skill).
-4. Respaldar `wp-content/uploads` si se usa contenido multimedia.
+1. Código ya versionado con Git (tema `tatc-headless`) y subido a ambos remotos. ✅ Hecho.
+2. Exportar la base de datos periódicamente (no hay WP-CLI instalado; usar el PHP/MySQL embebidos de Local — ver rutas en la skill).
+3. Respaldar `wp-content/uploads` si se usa contenido multimedia.
 
 ## Qué falta y próximos pasos
-1. Probar la integración real del frontend contra el endpoint (sirviendo el sitio con un servidor estático, no `file://`).
-2. Resolver el texto plano de `security.gate_password`/`page_passwords` antes de exponer el endpoint más ampliamente.
-3. Configurar un remoto para el repo de WordPress si se desea respaldo en la nube.
-4. Decidir si restringir el CORS del endpoint (`Access-Control-Allow-Origin: *` actualmente) a un dominio concreto antes de producción.
-5. Limpiar la ruta hardcodeada al Desktop en el script de auto-migración de `functions.php` (ya no se usa, pero queda como deuda técnica).
+1. Resolver el texto plano de `security.gate_password`/`page_passwords` antes de exponer el endpoint más ampliamente.
+2. Decidir si restringir el CORS del endpoint (`Access-Control-Allow-Origin: *` actualmente) a un dominio concreto antes de producción.
+3. Limpiar la ruta hardcodeada al Desktop en el script de auto-migración de `functions.php` (ya no se usa, pero queda como deuda técnica).
+4. Avanzar con `GUIA-PRODUCCION.md` si se decide lanzar el sitio real (dominio, hosting, migración).
 
 ## Notas adicionales
 - Mantener `wp-content/uploads` fuera del repo Git.

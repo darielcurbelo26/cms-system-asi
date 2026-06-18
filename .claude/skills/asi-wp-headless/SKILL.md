@@ -136,7 +136,7 @@ El WordPress que alimenta este frontend vive en un repo Git separado:
 - URL local: `http://asi-cms-website.local`
 - Tema activo: **`tatc-headless`** (custom — no es `twentytwentyfive`, que solo está instalado pero inactivo)
 - Plugins activos: `advanced-custom-fields` (ACF free). `elementor` NO está instalado en este sitio.
-- Repo Git: inicializado por Claude Code el 2026-06-17, **sin remoto configurado** (a diferencia del frontend, que ya está en GitHub). Solo el tema `tatc-headless` está versionado por ahora (ver `.gitignore` del repo WP).
+- Repo Git: inicializado por Claude Code el 2026-06-17, remoto `https://github.com/darielcurbelo26/tatc-wordpress` configurado ese mismo día. Solo el tema `tatc-headless` está versionado por ahora (ver `.gitignore` del repo WP).
 
 ### El endpoint `/wp-json/tatc/v1/content`
 
@@ -175,11 +175,11 @@ Git no cubre la base de datos ni los medios. Para respaldo completo:
 
 ## Reglas de publicación/push
 
-- El remoto del frontend es `https://github.com/darielcurbelo26/cms-system-asi`. El repo de WordPress local **no tiene remoto configurado todavía** — no asumir que existe uno ni inventar una URL.
+- Remotos: frontend en `https://github.com/darielcurbelo26/cms-system-asi`, WordPress real en `https://github.com/darielcurbelo26/tatc-wordpress` (configurado el 2026-06-17). No asumir que existe un remoto distinto a estos dos ni inventar una URL.
 - Nunca hacer push (y menos force-push) sin confirmación explícita del usuario en esa misma conversación, incluso si ya se autorizó un push antes.
 - Force-push a cualquier rama compartida (especialmente `main`) requiere confirmación explícita y nunca se hace por iniciativa propia.
 - Antes de publicar, verificar que no se esté subiendo ningún secreto real (passwords, dumps de DB, credenciales de WP).
-- Si se configura un remoto nuevo para el repo de WordPress local, confirmarlo con el usuario antes de crear el repo remoto o de hacer el primer push.
+- Si se configura un remoto nuevo (para cualquier repo), confirmarlo con el usuario antes de crear el repo remoto o de hacer el primer push.
 
 ## Reglas de seguridad
 
@@ -211,7 +211,7 @@ Antes de tocar código del lado WordPress, consultar la skill correspondiente en
 - [~] Bucle de recarga en local — **mitigado, no resuelto del todo.** La causa principal identificada es Live Server (VS Code) recargando ante cualquier cambio de archivo en el proyecto, agravado por su interacción con el caché del navegador (se rompe el ciclo al abrir DevTools). Se aplicó `.vscode/settings.json` con `liveServer.settings.ignoreFiles` excluyendo `.git/**`, `.claude/**`, `.DS_Store`. **Pero el usuario reporta que en frío (primer arranque de Live Server) todavía puede recargar varias veces antes de "entrar" establemente** — pendiente de investigar la causa exacta de ese comportamiento en frío específicamente (posible candidato: la primera negociación de la conexión websocket de Live Server, o el propio `checkSecurity()`/fetch a `content.json` en una carga sin caché todavía). Si reaparece de forma molesta, usar `python3 -m http.server` (sin auto-reload) para depurar sin esta variable.
 - [x] Probar la integración real del frontend (`cms-engine.js`) contra este endpoint real — **verificado el 2026-06-17**, los 3 escenarios de "Verificación" pasaron: WP arriba (las 4 rutas WP se actualizan), con draft + WP arriba (draft se conserva salvo en las 4 rutas WP, `projects_detail` se reemplaza completo por slug), y con draft + WP caído (cae a `content.json` con el warning esperado, sin romper la página, y sin tocar `projects_detail` porque la clave ya existía en el draft).
 - [ ] Resolver el texto plano de `security.gate_password`/`page_passwords` — el endpoint real ya lo expone tal cual, ver "Reglas de seguridad".
-- [ ] Configurar un remoto para el nuevo repo Git de `~/Local Sites/asi-cms-website/app/public/` (si se quiere respaldo en la nube).
+- [x] Remoto configurado para el repo Git de `~/Local Sites/asi-cms-website/app/public/` — **`https://github.com/darielcurbelo26/tatc-wordpress`, subido el 2026-06-17.**
 - [x] Código legado `admin-system.js` + `admin.css` + `data/config.json` — **eliminados el 2026-06-17** tras confirmar cero referencias.
 - [x] Carpeta duplicada `projects/projects/` y las artworks huérfanas de `projects/a-sweet-kid/artworks/` — **eliminadas el 2026-06-17** tras confirmar cero referencias (las imágenes reales viven en `assets/artworks/`).
 - [ ] El script de auto-migración en `functions.php` referencia una ruta del Desktop que ya no existe (ver "Reglas del lado WordPress") — no es urgente (ya corrió, tiene guard), pero limpiarlo evitaría confusión futura.
