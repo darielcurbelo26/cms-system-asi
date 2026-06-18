@@ -32,12 +32,11 @@ This is the part that spans multiple files and is easy to get wrong:
 - When the WP fetch succeeds, it is **not** a full overwrite: most top-level keys from WP only fill in keys missing from the draft, but `gallery_3d.artworks`, `gallery_3d.audio_src`, `projects.items`, and `projects_detail` are always overwritten by WP — these four are WP's source of truth. See the merge logic in `cms-engine.js`.
 - `content.json` defines the authoritative shape of all content (`global`, `home`, `blog`, `post`, `projects`, `projects_detail`, `gallery_3d`, `typography`, `artist`, `security`). Any change to the future WP REST response, or to the admin export, must keep this exact key structure or `cms-engine.js`'s dot-path lookups will silently return `undefined`.
 - The WP REST endpoint (`/wp-json/tatc/v1/content`) already exists and works, implemented in the `tatc-headless` theme's `functions.php` on the separate WordPress repo. It loads its own bundled copy of `content.json` as a base and only overwrites the four WP-source-of-truth paths above. See `.claude/skills/asi-wp-headless/SKILL.md` for the full contract, field names, and a documented merge-logic gotcha (`projects_detail` is replaced whole-object-per-slug, not merged field-by-field).
-- `script.js` independently re-fetches `/content.json` directly (for the page-gating/"security" feature) rather than going through `cms-engine.js`. It does **not** see the localStorage draft or WP data — only the static file. Keep this in sync if `security.*` content ever needs to be editable via WP/admin.
+- `script.js` independently re-fetches `content.json` directly (for the page-gating/"security" feature) rather than going through `cms-engine.js`. It does **not** see the localStorage draft or WP data — only the static file. Keep this in sync if `security.*` content ever needs to be editable via WP/admin. (All fetches in this codebase use relative paths, never a leading `/` — GitHub Pages serves this site from a subpath, not the domain root, so an absolute path silently 404s there.)
 
-## Admin tooling — two parallel systems, only one is live
+## Admin tooling
 
-- `admin/admin.html` is the active editor: its inline `<script>` block loads `../content.json`, lets you edit fields, saves a draft to `localStorage['tatc_cms']` (the same key `cms-engine.js` reads), and can export an updated `content.json`.
-- `admin/admin-system.js` + `admin/admin.css` implement a second admin panel keyed off `data/config.json`, but neither file is referenced by any `<script>`/`<link>` tag anywhere in the repo. Treat this pair as legacy/unused — don't assume it runs, and don't extend it unless asked to revive it.
+`admin/admin.html` is the editor: its inline `<script>` block loads `../content.json`, lets you edit fields, saves a draft to `localStorage['tatc_cms']` (the same key `cms-engine.js` reads), and can export an updated `content.json`. (A second, unused admin panel — `admin-system.js`/`admin.css`/`data/config.json` — existed earlier in this project's history and was removed once confirmed it was never referenced by any page.)
 
 ## Claude Code skills in this repo
 

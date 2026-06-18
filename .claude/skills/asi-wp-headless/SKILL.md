@@ -1,6 +1,6 @@
 ---
 name: asi-wp-headless
-description: "Usar al trabajar en el pipeline de contenido del CMS ASI/TATC: editar cms-engine.js, content.json, data/config.json, cualquier marcado data-cms/data-cms-attr, o construir/depurar el endpoint headless de WordPress /wp-json/tatc/v1/content. También usar antes de cualquier commit o push en este proyecto, y al tocar security.gate_password/page_passwords."
+description: "Usar al trabajar en el pipeline de contenido del CMS ASI/TATC: editar cms-engine.js, content.json, cualquier marcado data-cms/data-cms-attr, o construir/depurar el endpoint headless de WordPress /wp-json/tatc/v1/content. También usar antes de cualquier commit o push en este proyecto, y al tocar security.gate_password/page_passwords."
 ---
 
 # ASI WP Headless
@@ -13,7 +13,7 @@ Roles de los archivos clave:
 - `cms-engine.js` — motor de hidratación de contenido. Busca elementos `[data-cms]` en el DOM y los rellena desde un objeto de datos (ver "Flujo de datos y prioridad de merge"). Es el único punto de integración real con WordPress headless.
 - `content.json` — contrato/esquema de contenido. Es la fuente de verdad de la *forma* de los datos y el fallback final si WordPress no responde.
 - `admin/admin.html` — editor activo. Carga `content.json`, permite editarlo en el navegador, guarda un draft en `localStorage['tatc_cms']` y puede exportar un `content.json` actualizado. Es la única herramienta de admin realmente conectada.
-- `admin/admin-system.js` + `admin/admin.css` + `data/config.json` — código legado/paralelo, no referenciado por ningún HTML. No extender, no asumir que corre.
+- (Existió un segundo panel de admin paralelo — `admin-system.js`/`admin.css`/`data/config.json` — sin referenciar desde ningún HTML. Se eliminó el 2026-06-17 tras confirmar que nada lo cargaba.)
 - `script.js` — además de animaciones/transiciones de página, hace su propio `fetch('/content.json')` independiente para el page-gating (`security.*`). No pasa por `cms-engine.js`, por lo que nunca ve el draft de localStorage ni datos de WP.
 
 WordPress (lado servidor) vive en un repo totalmente separado: **`/Users/darielcurbelo/Local Sites/asi-cms-website/app/public/`** (sitio de Local, no confundir con `~/Documents/Wordpress_Local/test_1/`, que es un sitio Local distinto y no relacionado — ver "Incidente: ruta de WordPress equivocada" más abajo). Tema activo: `tatc-headless` (custom, NO `twentytwentyfive`). URL local: `http://asi-cms-website.local`. El endpoint `/wp-json/tatc/v1/content` **ya existe y ya funciona**, implementado en `wp-content/themes/tatc-headless/functions.php`. Frontend y WordPress se mantienen intencionalmente en repos y (a futuro) hostings separados — es el patrón correcto para headless, no un descuido a corregir.
@@ -212,8 +212,8 @@ Antes de tocar código del lado WordPress, consultar la skill correspondiente en
 - [x] Probar la integración real del frontend (`cms-engine.js`) contra este endpoint real — **verificado el 2026-06-17**, los 3 escenarios de "Verificación" pasaron: WP arriba (las 4 rutas WP se actualizan), con draft + WP arriba (draft se conserva salvo en las 4 rutas WP, `projects_detail` se reemplaza completo por slug), y con draft + WP caído (cae a `content.json` con el warning esperado, sin romper la página, y sin tocar `projects_detail` porque la clave ya existía en el draft).
 - [ ] Resolver el texto plano de `security.gate_password`/`page_passwords` — el endpoint real ya lo expone tal cual, ver "Reglas de seguridad".
 - [ ] Configurar un remoto para el nuevo repo Git de `~/Local Sites/asi-cms-website/app/public/` (si se quiere respaldo en la nube).
-- [ ] Decidir qué hacer con el código legado `admin-system.js` + `admin.css` + `data/config.json` (eliminar o documentar como obsoleto) — en el frontend.
-- [ ] Resolver la carpeta duplicada `projects/projects/` en el frontend.
+- [x] Código legado `admin-system.js` + `admin.css` + `data/config.json` — **eliminados el 2026-06-17** tras confirmar cero referencias.
+- [x] Carpeta duplicada `projects/projects/` y las artworks huérfanas de `projects/a-sweet-kid/artworks/` — **eliminadas el 2026-06-17** tras confirmar cero referencias (las imágenes reales viven en `assets/artworks/`).
 - [ ] El script de auto-migración en `functions.php` referencia una ruta del Desktop que ya no existe (ver "Reglas del lado WordPress") — no es urgente (ya corrió, tiene guard), pero limpiarlo evitaría confusión futura.
 - [x] Carrusel y galería 3D nunca cargaban — **corregido el 2026-06-17.** Tres causas distintas, encontradas una tras otra:
   1. `a-sweet-kid.html` nunca cargaba `cms-engine.js`, así que `cms:ready` nunca se disparaba ahí y `carousel.js` esperaba para siempre (falla en cualquier entorno, no solo Pages). Fix: agregar el `<script>` faltante.
