@@ -6,7 +6,7 @@ Este proyecto es un CMS estático/local que ya consume contenido desde un WordPr
 ## Hosting / deploy actual
 - **GitHub Pages** activo desde el 2026-06-17, sirviendo la rama `main` desde la raíz: **https://darielcurbelo26.github.io/cms-system-asi/**
 - Tiene `.nojekyll` en la raíz — necesario porque GitHub Pages procesa con Jekyll por defecto, y Jekyll ignora archivos/carpetas que empiezan con `_` (este proyecto tiene cientos de imágenes `assets/images/_1.webp`, `_2.webp`, etc. que Jekyll habría excluido del build).
-- ⚠️ El sitio público en Pages expone `content.json` tal cual, incluyendo `security.gate_password` en texto plano (decisión aceptada por ahora — ver `.claude/skills/asi-wp-headless/SKILL.md`, reglas de seguridad).
+- `content.json` ya no contiene ningún password — el sistema de Page Gate (ver más abajo) lo verifica server-side en WordPress.
 - Cada vez que se complete un avance real en este repo, se hace commit + push para mantenerlo respaldado en GitHub.
 - GitHub Pages aquí es el hosting de **desarrollo/demo**. Para producción real con dominio propio, ver **[GUIA-PRODUCCION.md](GUIA-PRODUCCION.md)** — propone un solo hosting compartido sirviendo la web en la raíz y WordPress en una subcarpeta (`/cms`), para evitar CORS entre dominios separados.
 
@@ -55,6 +55,7 @@ El detalle completo del esquema, el flujo de merge (incluida una trampa importan
 - CPT `project`, 2 posts publicados: `a-sweet-kid` (tipo `standard`) y `a-sweet-kid-online` (tipo `virtual`).
 - Imágenes y audio reales ya sideload-eados a la biblioteca de medios (portada, carrusel, las 3 obras de la galería 3D, audio ambiente).
 - Un CPT `artwork` adicional (1 post) que no se usa en la respuesta actual del endpoint — código/datos legacy.
+- CPT `tatc_gate` — protege páginas del frontend con password (ver "Page Gate" en `.claude/skills/asi-wp-headless/SKILL.md`). Hoy tiene una entrada para `a-sweet-kid-online.html`.
 
 ## Control de versiones y seguridad
 ### Git
@@ -74,10 +75,9 @@ Para una copia de seguridad completa se debe:
 3. Respaldar `wp-content/uploads` si se usa contenido multimedia.
 
 ## Qué falta y próximos pasos
-1. Resolver el texto plano de `security.gate_password`/`page_passwords` antes de exponer el endpoint más ampliamente.
-2. Decidir si restringir el CORS del endpoint (`Access-Control-Allow-Origin: *` actualmente) a un dominio concreto antes de producción.
-3. Limpiar la ruta hardcodeada al Desktop en el script de auto-migración de `functions.php` (ya no se usa, pero queda como deuda técnica).
-4. Avanzar con `GUIA-PRODUCCION.md` si se decide lanzar el sitio real (dominio, hosting, migración).
+1. Decidir si restringir el CORS del endpoint (`Access-Control-Allow-Origin: *` actualmente) a un dominio concreto antes de producción.
+2. Limpiar la ruta hardcodeada al Desktop en el script de auto-migración de `functions.php` (ya no se usa, pero queda como deuda técnica).
+3. Avanzar con `GUIA-PRODUCCION.md` si se decide lanzar el sitio real (dominio, hosting, migración).
 
 ## Notas adicionales
 - Mantener `wp-content/uploads` fuera del repo Git.

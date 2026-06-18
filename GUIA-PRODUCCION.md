@@ -63,7 +63,7 @@ Guarda, sube el cambio a GitHub, y luego sube ese mismo archivo actualizado al h
 
 ## Paso 7 — Seguridad antes de avisarle a la gente que el sitio existe
 
-1. Cambia la contraseña de prueba (`security.gate_password`, hoy dice `"sweet"`) por una contraseña real, en `content.json`.
+1. Los passwords de páginas protegidas ya no viven en `content.json` — se gestionan en `tudominio.com/cms/wp-admin`, sección **Page Gates**. Revisa que la entrada de cada página protegida tenga el password que quieres antes de anunciar el sitio.
 2. Abre `https://tudominio.com` en el navegador y confirma que aparece el candado de "sitio seguro", sin advertencias.
 
 ## Paso 8 — Agrega métricas de visitas (recomendado)

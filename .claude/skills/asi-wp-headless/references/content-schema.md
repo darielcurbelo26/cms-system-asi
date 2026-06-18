@@ -128,9 +128,9 @@ artist.bio2          string
 ## security
 
 ```
-security.gate_password       string — ⚠️ texto plano, ver reglas de seguridad en SKILL.md
 security.gate_title           string
 security.gate_description     string
 security.pages{}              objeto: nombre de archivo .html → "public" | "private"
-security.page_passwords{}     objeto: nombre de archivo .html → string (password específica de esa página, puede ir vacía)
 ```
+
+Ya no contiene ningún password (no es un campo de este JSON). Los passwords de páginas protegidas viven solo en el CPT `tatc_gate` de WordPress y se verifican vía `POST /wp-json/tatc/v1/verify-password` — ver "Page Gate" en SKILL.md.

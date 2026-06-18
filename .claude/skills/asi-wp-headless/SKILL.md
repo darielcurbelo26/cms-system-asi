@@ -1,6 +1,6 @@
 ---
 name: asi-wp-headless
-description: "Usar al trabajar en el pipeline de contenido del CMS ASI/TATC: editar cms-engine.js, content.json, cualquier marcado data-cms/data-cms-attr, o construir/depurar el endpoint headless de WordPress /wp-json/tatc/v1/content. También usar antes de cualquier commit o push en este proyecto, y al tocar security.gate_password/page_passwords."
+description: "Usar al trabajar en el pipeline de contenido del CMS ASI/TATC: editar cms-engine.js, content.json, cualquier marcado data-cms/data-cms-attr, o construir/depurar el endpoint headless de WordPress /wp-json/tatc/v1/content o /wp-json/tatc/v1/verify-password. También usar antes de cualquier commit o push en este proyecto, y al tocar el gating de páginas (security.pages, password.html, el CPT tatc_gate)."
 ---
 
 # ASI WP Headless
@@ -96,7 +96,7 @@ Notas del ejemplo: `global.brand` se conserva del draft porque ya existía y no 
 | `gallery_3d` | **WordPress** (`artworks`, `audio_src`) | galería 3D inmersiva |
 | `typography` | draft/fallback | tokens de tipografía por rol |
 | `artist` | draft/fallback | bio del artista |
-| `security` | draft/fallback | gate_password, page_passwords — ⚠️ texto plano, ver reglas de seguridad |
+| `security` | draft/fallback | `gate_title`, `gate_description`, `pages` (mapa público/privado). Ya **no** contiene ningún password — ver "Page Gate" en reglas de seguridad |
 
 Detalle completo de campos por sección: `references/content-schema.md`.
 
@@ -171,7 +171,7 @@ Git no cubre la base de datos ni los medios. Para respaldo completo:
 - **No commitear generados del sistema** (`.DS_Store`) — ya están en `.gitignore`; si se edita ese archivo, confirmar que sigue cubriéndolos.
 - **No commitear credenciales ni dumps de base de datos** (`local.sql`) en el repo de WordPress, ni nada bajo `wp-content/uploads/`.
 - **Mensajes de commit con el "qué" y el "por qué"** cuando no sea obvio.
-- **Antes de cualquier commit**, revisar que no se esté incluyendo un valor real de `security.gate_password`/`security.page_passwords` sin haber resuelto primero el riesgo de seguridad documentado más abajo.
+- **Antes de cualquier commit**, revisar que no se esté incluyendo ningún valor real de password de un Page Gate (deben vivir solo en la base de datos de WordPress, nunca en un archivo de este repo ni del repo de WordPress).
 
 ## Reglas de publicación/push
 
@@ -183,14 +183,25 @@ Git no cubre la base de datos ni los medios. Para respaldo completo:
 
 ## Reglas de seguridad
 
-- **Nunca commitear:** `wp-config.php`, dumps de base de datos (`local.sql` u otros `.sql`), archivos `.env`, ni ninguna credencial de WordPress (usuario/contraseña de admin, claves de aplicación).
-- **`security.gate_password` y `security.page_passwords` ya están comprometidos hoy.** Viven en texto plano dentro de `content.json`, que está commiteado y subido a `https://github.com/darielcurbelo26/cms-system-asi` — cualquiera con acceso al repo (o al archivo `/content.json` que el sitio sirve en producción) puede leer la contraseña directamente. Tratar el valor actual como ya no-confidencial: si se necesita una gate real, hay que (a) rotar la contraseña, y (b) moverla fuera de un archivo servido públicamente antes de considerarla segura otra vez.
-- **El endpoint `/wp-json/tatc/v1/content` ya existe y, como reusa `content.json` tal cual, devuelve `security.gate_password` en texto plano a quien lo consulte.** Lo ideal es mover la verificación de la gate a un endpoint server-side aparte (ej. `POST /wp-json/tatc/v1/verify-password` que devuelve `true`/`false`) en vez de mandar el password al cliente para comparar en JS, y que `tatc_get_custom_content()` deje de incluir `security.*` en su respuesta.
+- **Nunca commitear:** `wp-config.php`, dumps de base de datos (`local.sql` u otros `.sql`), archivos `.env`, ni ninguna credencial de WordPress (usuario/contraseña de admin, claves de aplicación). Tampoco el password real de ningún Page Gate (ver siguiente punto) — esos valores viven únicamente en la base de datos de WordPress.
+
+### Page Gate — protección de páginas por password (implementado 2026-06-18)
+
+El password de páginas protegidas (`security.pages[x] === "private"`) **ya no vive en ningún archivo del repo**. El flujo actual:
+
+1. **CPT `tatc_gate`** en el WordPress real (`tatc-headless/functions.php`) — cada entrada tiene dos campos ACF: `page_file` (ej. `a-sweet-kid-online.html`) y `password`. Para proteger una página nueva, basta con crear una entrada nueva en wp-admin (**Page Gates → Añadir nuevo**) — no requiere tocar código.
+2. **Endpoint `POST /wp-json/tatc/v1/verify-password`** — recibe `{page, password}`, busca la entrada `tatc_gate` con ese `page_file`, compara con `hash_equals()` server-side, y responde solo `{ok: true|false}`. El valor real del password **nunca** sale de WordPress.
+3. **`password.html`** ya no compara nada localmente — llama a ese endpoint y actúa según la respuesta.
+4. **`content.json`** (y su copia bundleada en el tema de WP) ya no tienen `gate_password` ni `page_passwords` — `security` solo guarda `gate_title`, `gate_description` y `pages` (el mapa público/privado, que no es sensible).
+5. **Si WordPress está caído, el acceso se niega** (no hay fallback local) — es el trade-off correcto: cualquier sistema de login real depende de que el backend esté arriba. Verificado empíricamente (ver "Verificación").
+
+Esto resuelve la exposición del password (problema real), pero **no** convierte el sitio en uno con control de acceso a nivel de archivo: como el HTML/JS/assets siguen siendo archivos estáticos servidos a cualquiera, alguien que sepa cómo (ver código fuente, `curl`, deshabilitar JS) puede seguir llegando al contenido de la página protegida sin pasar por el gate. Si en algún momento se necesita protección real a nivel de archivo, hay que moverse a hosting con autenticación de servidor (`.htaccess`/`htpasswd`, Cloudflare Access, etc. — no disponible en GitHub Pages).
+
 - **Checklist antes de publicar (commit o push):**
   - ¿El diff incluye algún valor real de password, API key o credencial?
   - ¿Se está exportando contenido desde el admin que incluya secretos sin querer?
   - ¿El `.gitignore` sigue cubriendo lo que no debe versionarse?
-- Si se detecta un secreto que ya fue commiteado y subido al remoto, no basta con borrarlo en un commit nuevo — ya quedó expuesto en el historial. Hay que rotarlo y avisar al usuario explícitamente, no solo corregir el archivo.
+- Si se detecta un secreto que ya fue commiteado y subido al remoto, no basta con borrarlo en un commit nuevo — ya quedó expuesto en el historial. Hay que rotarlo y avisar al usuario explícitamente, no solo corregir el archivo. (Esto ya pasó con el password viejo, `"sweet"` — se rotó al crear el Page Gate, ver pendientes.)
 
 ## Referencias a las skills WP nativas
 
@@ -210,7 +221,7 @@ Antes de tocar código del lado WordPress, consultar la skill correspondiente en
 - [x] CORS — el endpoint ya manda `Access-Control-Allow-Origin: *`. Pendiente decidir si restringirlo a un dominio concreto antes de producción.
 - [~] Bucle de recarga en local — **mitigado, no resuelto del todo.** La causa principal identificada es Live Server (VS Code) recargando ante cualquier cambio de archivo en el proyecto, agravado por su interacción con el caché del navegador (se rompe el ciclo al abrir DevTools). Se aplicó `.vscode/settings.json` con `liveServer.settings.ignoreFiles` excluyendo `.git/**`, `.claude/**`, `.DS_Store`. **Pero el usuario reporta que en frío (primer arranque de Live Server) todavía puede recargar varias veces antes de "entrar" establemente** — pendiente de investigar la causa exacta de ese comportamiento en frío específicamente (posible candidato: la primera negociación de la conexión websocket de Live Server, o el propio `checkSecurity()`/fetch a `content.json` en una carga sin caché todavía). Si reaparece de forma molesta, usar `python3 -m http.server` (sin auto-reload) para depurar sin esta variable.
 - [x] Probar la integración real del frontend (`cms-engine.js`) contra este endpoint real — **verificado el 2026-06-17**, los 3 escenarios de "Verificación" pasaron: WP arriba (las 4 rutas WP se actualizan), con draft + WP arriba (draft se conserva salvo en las 4 rutas WP, `projects_detail` se reemplaza completo por slug), y con draft + WP caído (cae a `content.json` con el warning esperado, sin romper la página, y sin tocar `projects_detail` porque la clave ya existía en el draft).
-- [ ] Resolver el texto plano de `security.gate_password`/`page_passwords` — el endpoint real ya lo expone tal cual, ver "Reglas de seguridad".
+- [x] Resolver el texto plano de `security.gate_password`/`page_passwords` — **resuelto el 2026-06-18** con el sistema de Page Gate (CPT `tatc_gate` + endpoint `verify-password`), ver "Reglas de seguridad".
 - [x] Remoto configurado para el repo Git de `~/Local Sites/asi-cms-website/app/public/` — **`https://github.com/darielcurbelo26/tatc-wordpress`, subido el 2026-06-17.**
 - [x] Código legado `admin-system.js` + `admin.css` + `data/config.json` — **eliminados el 2026-06-17** tras confirmar cero referencias.
 - [x] Carpeta duplicada `projects/projects/` y las artworks huérfanas de `projects/a-sweet-kid/artworks/` — **eliminadas el 2026-06-17** tras confirmar cero referencias (las imágenes reales viven en `assets/artworks/`).
