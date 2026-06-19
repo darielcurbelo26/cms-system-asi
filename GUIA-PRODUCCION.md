@@ -20,11 +20,24 @@ Así no tienes que pagar ni administrar dos cosas separadas, y evitamos un probl
 
 Son precios de referencia — confirma el precio real con el proveedor antes de pagar, y mira cuánto cuesta la **renovación** (suele subir después del primer año).
 
+> 💡 **Nota sobre los pasos técnicos (4, 5 y 6):** no es obligatorio hacerlos a mano. Si tu desarrollador tiene acceso **SSH/SFTP** y a la base de datos del hosting, puede hacer esos pasos directamente desde su computadora — solo necesita que le compartas esos accesos una vez tengas la cuenta de hosting.
+
 ---
 
-## Paso 1 — Compra el dominio
+## Paso 1 — El dominio
 
-Entra a [Namecheap](https://www.namecheap.com) (o Cloudflare), busca el nombre que quieras, y cómpralo. Eso es todo — no necesitas nada más de ahí.
+**Si ya tienes un dominio** (por ejemplo, registrado o conectado en Squarespace, como en este caso): no necesitas comprar uno nuevo. Solo hay que "redirigirlo" para que apunte al hosting nuevo — ver el Paso 1b más abajo.
+
+**Si todavía no tienes ninguno**: entra a [Namecheap](https://www.namecheap.com) (o Cloudflare), busca el nombre que quieras, y cómpralo. Eso es todo, no necesitas nada más de ahí.
+
+### Paso 1b — Si tu dominio está en Squarespace
+
+"Redirigir" el dominio no significa transferirlo ni perderlo — solo se cambia a dónde apunta.
+
+1. Entra a tu cuenta de Squarespace → **Settings → Domains** → clic en el dominio. Ahí confirmas si dice "registrado en Squarespace" o "conectado desde otro lugar" (avísale a tu desarrollador cuál de las dos dice).
+2. En esa misma pantalla, busca **DNS Settings** (o "Advanced Settings"). Ahí se cambian los registros DNS para que apunten al hosting nuevo — tu desarrollador te dice exactamente qué valor poner una vez tengan la cuenta de Hostinger lista.
+3. En cuanto se actualice el DNS, el sitio viejo de Squarespace deja de verse en ese dominio (la suscripción de Squarespace no se cancela sola, eso es aparte).
+4. **Posible ahorro**: como ya no vas a usar el editor de sitios de Squarespace, revisa **Settings → Billing** ahí — probablemente puedes cancelar o bajar el plan del "sitio web" (la parte cara) y quedarte solo pagando el dominio (mucho más económico).
 
 ## Paso 2 — Compra el hosting
 
