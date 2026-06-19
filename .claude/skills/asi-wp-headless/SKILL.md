@@ -236,6 +236,18 @@ Antes de tocar código del lado WordPress, consultar la skill correspondiente en
 - [ ] `content.json.typography` (tokens de tamaño/peso/tracking de fuente) **no lo lee ningún JS del proyecto** — es configuración muerta, no afecta el render hoy. Por eso quedó fuera de la migración a gestión por WordPress (ver más abajo) — no tiene sentido exponer para edición algo que no hace nada. Si en el futuro se decide conectarlo a algo real, hacerlo ahí.
 - [ ] **En mobile, arrastrar el cubo 3D de `index.html` también hace scroll de la página (debería mover solo el cubo).** Causa identificada (2026-06-19), sin corregir todavía: en `script.js` líneas 357-358, los listeners `touchstart`/`touchmove` del cubo están registrados con `{ passive: true }`, lo que le dice al navegador que el handler nunca llamará `preventDefault()` — el navegador hace scroll de inmediato sin esperar al JS. Además, ni `onDown` ni `onMove` llaman `preventDefault()` en ningún punto. Fix pendiente: quitar `passive: true` (o `false`) y llamar `e.preventDefault()` mientras `isDrag` esté activo.
 
+### Migración de content.json a gestión por WordPress (en curso, 2026-06-19)
+
+Por petición del usuario, se está moviendo la edición de las secciones de `content.json` que no son `projects`/`gallery_3d` (esas ya las gestiona WP desde antes) a una pantalla de ajustes en `wp-admin`: **Settings → TATC Content**. Regla seguida estrictamente: solo se mueve el VALOR, nunca la FORMA — cada option de WordPress reconstruye exactamente la misma forma que su sección en `content.json`, verificado byte-a-byte tras cada sección antes de seguir con la siguiente.
+
+- [x] `artist` → option `tatc_artist`.
+- [x] `global` → option `tatc_global` (incluye `nav.*` y `social.*` anidados).
+- [x] `home` → option `tatc_home`.
+- [x] `security.gate_title`/`security.gate_description` → option `tatc_security_gate` (⚠️ `security.pages` y cualquier password siguen como están, no se tocaron).
+- [ ] `blog` + `post` (las entradas del blog) — pendiente, planeado usar las Entradas nativas de WordPress (CPT `post` ya integrado) en vez de una pantalla de ajustes, porque el editor de bloques calza mejor con la estructura `body[]` de tipos `paragraph`/`image`/`pullquote`.
+- **Excluido a propósito:** `typography` — no se migra porque no es contenido editorial (ver pendiente arriba sobre que no lo lee ningún JS), y el usuario pidió explícitamente no arriesgar que los estilos cambien sin necesidad.
+- El merge en `tatc_get_custom_content()` usa `array_merge($data[seccion] ?? array(), $option)` — solo sobreescribe si el option ya tiene contenido (evita vaciar `content.json` antes de que alguien guarde el formulario por primera vez la primera vez que se despliega este código).
+
 ## Principio de documentación a futuro
 
 Toda regla y contrato de esta skill debe describirse en términos de comportamiento (qué pasa, en qué orden, bajo qué condición), no en términos de la implementación vanilla-JS actual cuando sea posible. El esquema de `content.json`, el flujo de merge, y las convenciones `data-cms` deben quedar documentados de forma que, si en el futuro se decide migrar el frontend a un framework moderno (Next.js, Astro, etc.), esta skill sirva directamente como spec de migración en lugar de tener que redocumentar todo desde cero.
