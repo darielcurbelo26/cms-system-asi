@@ -42,7 +42,7 @@
 
     // 2 — Fetch from WordPress Headless API
     try {
-      let res = await fetch('http://asi-cms-website.local/wp-json/tatc/v1/content?t=' + Date.now());
+      let res = await fetch('https://throughalltheclutter.com/cms/wp-json/tatc/v1/content?t=' + Date.now());
       if (res.ok) {
         const fresh = await res.json();
         if (!data) {
