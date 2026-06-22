@@ -355,7 +355,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
     window.addEventListener('mouseup', () => { isDrag = false; container.style.cursor = 'grab'; });
     container.addEventListener('touchstart', e => onDown(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
-    window.addEventListener('touchmove', e => { if (isDrag) onMove(e.touches[0].clientX, e.touches[0].clientY); }, { passive: true });
+    window.addEventListener('touchmove', e => {
+        if (!isDrag) return;
+        e.preventDefault();
+        onMove(e.touches[0].clientX, e.touches[0].clientY);
+    }, { passive: false });
     window.addEventListener('touchend', () => { isDrag = false; container.style.cursor = 'grab'; });
     window.addEventListener('resize', () => { updateDims(); posX = wrapper.offsetWidth / 2; posY = wrapper.offsetHeight / 2; });
 
