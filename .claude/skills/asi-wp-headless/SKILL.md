@@ -193,7 +193,8 @@ Git no cubre la base de datos ni los medios. Para respaldo completo:
 
 El password de páginas protegidas (`security.pages[x] === "private"`) **ya no vive en ningún archivo del repo**. El flujo actual:
 
-1. **CPT `tatc_gate`** en el WordPress real (`tatc-headless/functions.php`) — cada entrada tiene dos campos ACF: `page_file` (ej. `a-sweet-kid-online.html`) y `password`. Para proteger una página nueva, basta con crear una entrada nueva en wp-admin (**Page Gates → Añadir nuevo**) — no requiere tocar código.
+1. **CPT `tatc_gate`** en el WordPress real (`tatc-headless/functions.php`) — cada entrada tiene cuatro campos ACF: `page_file` (ej. `a-sweet-kid-online.html`), `password`, y opcionalmente `gate_title`/`gate_description` (si se dejan vacíos, `password.html` usa el texto general de Settings → TATC Content). Para proteger una página nueva, basta con crear una entrada nueva en wp-admin (**Page Gates → Añadir nuevo**) — no requiere tocar código.
+   - **Cada gate es independiente** (corregido el 2026-06-25): el desbloqueo se guarda en `sessionStorage` con una clave por página (`tatc-unlocked-<page_file>`), no una clave global — entrar a un gate no debe desbloquear los demás. Antes de este fix sí lo hacía (bug real encontrado en producción).
 2. **Endpoint `POST /wp-json/tatc/v1/verify-password`** — recibe `{page, password}`, busca la entrada `tatc_gate` con ese `page_file`, compara con `hash_equals()` server-side, y responde solo `{ok: true|false}`. El valor real del password **nunca** sale de WordPress.
 3. **`password.html`** ya no compara nada localmente — llama a ese endpoint y actúa según la respuesta.
 4. **`content.json`** (y su copia bundleada en el tema de WP) ya no tienen `gate_password` ni `page_passwords` — `security` solo guarda `gate_title`, `gate_description` y `pages` (el mapa público/privado, que no es sensible).
