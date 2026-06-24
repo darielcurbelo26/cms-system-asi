@@ -80,7 +80,8 @@
             if (page === 'password.html' || page === '404.html' || lookupPage === 'password.html' || lookupPage === '404.html') return;
 
             const visibility = pages[lookupPage] || 'public';
-            const isUnlocked = sessionStorage.getItem('tatc-unlocked') === 'true';
+            // Each gated page has its own unlock key — unlocking one must not unlock the rest.
+            const isUnlocked = sessionStorage.getItem('tatc-unlocked-' + lookupPage) === 'true';
 
             if (visibility === 'private' && !isUnlocked) {
                 // Redirect to gateway with return page info
