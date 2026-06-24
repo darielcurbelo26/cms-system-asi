@@ -41,17 +41,37 @@
     });
 
     // --- GATEWAY / SECURITY CHECK ---
+    // Qué páginas son privadas se decide combinando dos fuentes: content.json
+    // (rápido, local, sirve de respaldo si WordPress no responde a tiempo) y
+    // WordPress (fuente real: cualquier "Page Gate" creado en wp-admin aplica
+    // de inmediato). WordPress gana si ambas listan la misma página.
+    async function fetchJsonWithTimeout(url, ms) {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), ms);
+        try {
+            const res = await fetch(url, { signal: controller.signal });
+            return res.ok ? await res.json() : null;
+        } catch (e) {
+            return null;
+        } finally {
+            clearTimeout(timeout);
+        }
+    }
+
     async function checkSecurity() {
         try {
-            const response = await fetch('content.json?t=' + Date.now());
-            const data = await response.json();
-            const security = data.security;
-            if (!security) return;
+            const [staticData, wpData] = await Promise.all([
+                fetchJsonWithTimeout('content.json?t=' + Date.now(), 3000),
+                fetchJsonWithTimeout('https://throughalltheclutter.com/cms/wp-json/tatc/v1/content?t=' + Date.now(), 2500),
+            ]);
+
+            const pages = { ...(staticData?.security?.pages || {}), ...(wpData?.security?.pages || {}) };
+            if (Object.keys(pages).length === 0) return;
 
             // Get current page filename
             const path = window.location.pathname;
             let page = path.split("/").pop() || 'index.html';
-            
+
             // Normalize: if no extension, assume .html for lookup
             let lookupPage = page;
             if (!lookupPage.includes('.')) lookupPage += '.html';
@@ -59,7 +79,7 @@
             // Special case for password page itself - avoid infinite loop
             if (page === 'password.html' || page === '404.html' || lookupPage === 'password.html' || lookupPage === '404.html') return;
 
-            const visibility = security.pages?.[lookupPage] || 'public';
+            const visibility = pages[lookupPage] || 'public';
             const isUnlocked = sessionStorage.getItem('tatc-unlocked') === 'true';
 
             if (visibility === 'private' && !isUnlocked) {
