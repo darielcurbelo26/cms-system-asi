@@ -318,7 +318,7 @@ document.getElementById('btn-room').addEventListener('click', () => setFocus(nul
 
 document.getElementById('btn-exit').addEventListener('click', () => {
   if (document.referrer?.includes(location.host)) history.back();
-  else location.href = 'index.html';
+  else location.href = '/';
 });
 
 let audioLabel = document.getElementById('btn-audio');
