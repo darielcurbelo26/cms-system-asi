@@ -128,6 +128,29 @@ if (window.TATC_CONTENT) {
 
 Cualquier script nuevo que dependa del contenido debe seguir este mismo patrón doble (chequear `TATC_CONTENT` primero, escuchar `cms:ready` como respaldo) para no asumir un orden de carga de `<script>` específico.
 
+### Cache-busting de los JS propios — convención obligatoria
+
+Todo `<script src="archivo.js">` de un archivo propio del proyecto (no CDN) debe llevar `?v=N`: `cms-engine.js`, `script.js`, `a-sweet-kid-online.js`, `design-system.js`, `carousel.js`, `projects.js`, `cube-scene.js`. **Subir el número en cada `<script>` que lo referencia cuando se edite ese JS de forma significativa** — no hay build tool que lo automatice, es manual. Motivo real (no preventivo): en producción, una visitante con una copia vieja de `a-sweet-kid-online.js` cacheada por el navegador veía las obras de la galería 3D en negro, y otra con `cms-engine.js` viejo seguía intentando conectarse a la URL local de desarrollo — ambos casos eran archivos sin versionar, cacheados desde antes del despliegue a producción. Estado actual: `cms-engine.js`/`design-system.js`/`a-sweet-kid-online.js`/`carousel.js`/`projects.js`/`cube-scene.js` en `?v=2` o `?v=3` según el archivo, `script.js` en `?v=3` — revisar el HTML real si se necesita el número exacto vigente.
+
+### URLs sin `.html` (implementado 2026-06-25)
+
+El sitio público usa URLs "bonitas" (`/blog`, `/projects`, `/a-sweet-kid-online`), no `archivo.html`. Esto vive enteramente en `public_html/.htaccess` (en el hosting real, **no versionado en este repo** — es específico del servidor, igual que cualquier `.htaccess`), con este orden de reglas (el orden importa, ver incidentes abajo):
+
+1. `/index.html` → 301 a `/`.
+2. `/cualquier-pagina.html` → 301 a `/cualquier-pagina` (vía `%{THE_REQUEST}`, no `%{REQUEST_URI}`, para no entrar en loop con la regla 3).
+3. `/cualquier-pagina` → si existe `cualquier-pagina.html` en disco, se sirve internamente (sin redirect visible).
+4. Cualquier archivo/carpeta real (`assets/`, `cms/`, `projects/<slug>/`) se deja intacto.
+5. `/` → sirve `index.html` internamente.
+6. También conecta `ErrorDocument 404 /404.html` — el 404 personalizado del repo nunca había estado activo en un hosting real (solo funcionaba por convención en GitHub Pages).
+
+**Incidentes reales al implementar esto, ambos por orden de reglas:**
+- La regla 2 (redirect `.html`→bonita) **debe ir antes** de la regla 4 (passthrough de archivos reales) — si va después, nunca se ejecuta para ningún `.html` existente (que son todos), porque la regla 4 ya cortó el proceso con `[L]`.
+- La regla 3 (servir `pagina.html` para `/pagina`) **debe ir antes** de la regla 4 también, no después — `projects.html` colisiona con la carpeta real `projects/` (assets de proyectos individuales), y Apache prioriza la carpeta (redirect 301 automático a `/projects/`, que da 403 al no tener índice). La página debe ganarle a la carpeta.
+
+**Efectos en el código del frontend, no solo en `.htaccess`:**
+- `password.html` normaliza el nombre de página (`if (!pageName.includes('.')) pageName += '.html'`) — sin esto, un gate abierto desde una URL bonita (`/blog`) no hace match con el `page_file` guardado en WordPress (`blog.html`) y el password nunca verifica. `script.js`'s `checkSecurity()` ya hacía esta misma normalización desde antes.
+- Todos los `<a href="pagina.html">` del sitio se actualizaron a `href="pagina"` (los enlaces viejos con `.html` siguen funcionando vía el redirect, esto solo evita un salto extra en la navegación normal).
+
 ## Reglas del lado WordPress
 
 El WordPress que alimenta este frontend vive en un repo Git separado:
